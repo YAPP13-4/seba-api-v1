@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "seba",
-    "password": "1234",
+    "password": "seba1234",
     "database": "seba_dev",
     "host": "127.0.0.1",
     "dialect": "mysql",
@@ -9,7 +9,7 @@
   },
   "test": {
     "username": "seba",
-    "password": "1234",
+    "password": "seba1234",
     "database": "seba_test",
     "host": "127.0.0.1",
     "dialect": "mysql",
