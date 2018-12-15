@@ -5,7 +5,10 @@
     "database": "seba_dev",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "operatorsAliases": false
+    "operatorsAliases": false,
+    "define": {
+      "underscored": true
+    }
   },
   "test": {
     "username": "seba",

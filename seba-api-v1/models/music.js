@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100)
     },
     song_url: {
-      tyep: DataTypes.STRING(255)
+      type: DataTypes.STRING(255)
     },
     created_at: {
       type: DataTypes.DATE,
