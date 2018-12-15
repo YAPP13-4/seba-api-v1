@@ -10,5 +10,11 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 db.User = require('./user')(sequelize, Sequelize);
+db.Music = require('./music')(sequelize, Sequelize);
+db.Playlist = require('./playlist')(sequelize, Sequelize);
+db.Featured = require('./featured')(sequelize, Sequelize);
+db.Comment = require('./comment')(sequelize, Sequelize);
+
+
 
 module.exports = db;
