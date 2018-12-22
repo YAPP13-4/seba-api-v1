@@ -33,8 +33,4 @@ db.Featured.belongsTo(db.Music, { foreignKey: 'music_id' , targetKey: 'id'});
 db.Music.hasMany(db.Comment, { foreignKey: 'music_id' , sourceKey: 'id'});
 db.Comment.belongsTo(db.Music, { foreignKey: 'music_id' , targetKey: 'id'});
 
-
-
-
-
 module.exports = db;

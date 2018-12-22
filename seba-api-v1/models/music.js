@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     title: {
       type: DataTypes.STRING(100)
     },
-    song_url: {
+    url: {
       type: DataTypes.STRING(255)
     },
     created_at: {
