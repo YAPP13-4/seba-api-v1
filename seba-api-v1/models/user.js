@@ -6,10 +6,11 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING(100)
     },
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+      field: 'created_at'
     },
   }, {
     timestamps: false,
