@@ -7,6 +7,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var playlistsRouter = require('./routes/playlists');
+var musicRouter = require('./routes/musics');
+
 var sequelize = require('./models').sequelize;
 
 var app = express();
@@ -25,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/playlists', playlistsRouter);
+app.use('/musics', musicRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
