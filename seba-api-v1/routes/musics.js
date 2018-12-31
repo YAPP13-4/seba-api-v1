@@ -1,6 +1,7 @@
 var express = require('express');
 var request = require('request');
 const models = require('../models');
+const Op = models.sequelize.Op;
 
 var router = express.Router();
 
