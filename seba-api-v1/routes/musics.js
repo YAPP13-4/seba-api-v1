@@ -19,17 +19,31 @@ router.post('/', function(req, res, next) {
   request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       let apiGet = JSON.parse(body);
-      models.Music.create({
-        title: apiGet.title,
-        musician: apiGet.user.username,
-        musicianImg: apiGet.user.avatar_url,
-        description: apiGet.description,
-        artworkImg: apiGet.artwork_url,
-        duration: apiGet.duration,
-        streamUrl: apiGet.stream_url,
-        playCount: 0,
-        createdAtSoundcloud: apiGet.created_at
-      }).then((musics) => res.status(201).json(musics));
+      if (user!=null) {
+        models.Music.create({
+          title: apiGet.title,
+          musician: apiGet.user.username,
+          musicianImg: apiGet.user.avatar_url,
+          description: apiGet.description,
+          artworkImg: apiGet.artwork_url,
+          duration: apiGet.duration,
+          streamUrl: apiGet.stream_url,
+          playCount: 0,
+          createdAtSoundcloud: apiGet.created_at
+        }).then((musics) => res.status(201).json(musics));
+      } else {
+        models.Music.create({
+          title: apiGet.title,
+          musician: apiGet.username,
+          musicianImg: apiGet.avatar_url,
+          description: apiGet.description,
+          artworkImg: apiGet.artwork_url,
+          duration: apiGet.duration,
+          streamUrl: apiGet.stream_url,
+          playCount: 0,
+          createdAtSoundcloud: apiGet.created_at
+        }).then((musics) => res.status(201).json(musics));
+      }
     }
   })
 })
