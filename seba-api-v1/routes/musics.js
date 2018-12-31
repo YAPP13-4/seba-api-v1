@@ -1,21 +1,21 @@
 var express = require('express');
 var request = require('request');
-const models = require('../models')
+const models = require('../models');
 
 var router = express.Router();
 
 const clientId = "a281614d7f34dc30b665dfcaa3ed7505";
 
-// router.get('/', function(req, res, next) {
-//   models.Music.findAll()
-//   .then(musics => res.json(musics))
-// })
+router.get('/seba-choice', function(req, res, next) {
+  models.Music.findAll({where: {id: {[Op.lte]:20}}})
+  .then(musics => {
+    res.json(musics)
+  })
+})
 
 router.post('/', function(req, res, next) {
   let url = req.body.url;
-  console.log(url)
   request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (error, response, body) {
-    console.log(error);
     if (!error && response.statusCode === 200) {
       let apiGet = JSON.parse(body);
       models.Music.create({
@@ -32,4 +32,5 @@ router.post('/', function(req, res, next) {
     }
   })
 })
+
 module.exports = router;
