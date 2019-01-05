@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100)
     },
     time: {
-      type: DataTypes.STRING(100)
+      type: DataTypes.INTEGER
     },
     createdAt: {
       type: DataTypes.DATE,
