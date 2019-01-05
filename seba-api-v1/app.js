@@ -9,6 +9,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var playlistsRouter = require("./routes/playlists");
 var musicRouter = require("./routes/musics");
+var featuredRouter = require("./routes/featured")
 
 var sequelize = require("./models").sequelize;
 
@@ -30,6 +31,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/playlists", playlistsRouter);
 app.use("/musics", musicRouter);
+app.use("/featured", featuredRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
