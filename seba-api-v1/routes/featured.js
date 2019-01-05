@@ -10,14 +10,18 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
   const type = req.body.type;
+  const time = req.body.time;
+  const musicId = req.body.musicId;
   models.Featured.create({
-    type: type
+    type: type,
+    time: time,
+    music_id: musicId
   }).then((featured) => res.status(201).json(featured));
 });
 
 router.get('/:id', function(req,res,next) {
-  const featuredId = req.params.id;
-  models.Featured.findById(featuredId)
+  const musicId = req.params.id;
+  models.Featured.findAll({where: {music_id: musicId}})
   .then(featured => res.json(featured));
 });
 module.exports = router;
