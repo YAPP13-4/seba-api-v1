@@ -18,8 +18,8 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/:id', function(req,res,next) {
-  const musicId = req.params.id;
-  models.Featured.findAll({where: {music_id: musicId}})
+  const music_id = req.params.id;
+  models.Featured.findAll({where: {music_id}})
   .then(featured => res.json(featured));
 });
 module.exports = router;
