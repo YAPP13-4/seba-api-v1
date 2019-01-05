@@ -3,6 +3,9 @@ module.exports = (sequelize, DataTypes) => {
     type: {
       type: DataTypes.STRING(100)
     },
+    time: {
+      type: DataTypes.STRING(100)
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
