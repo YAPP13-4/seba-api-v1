@@ -9,13 +9,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  const type = req.body.type;
-  const time = req.body.time;
-  const musicId = req.body.musicId;
+  const {type, time, music_id} = req.body;
   models.Featured.create({
-    type: type,
-    time: time,
-    music_id: musicId
+    type,
+    time,
+    music_id
   }).then((featured) => res.status(201).json(featured));
 });
 
