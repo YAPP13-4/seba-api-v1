@@ -4,17 +4,25 @@ var router = express.Router();
 const models = require('../models');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
     models.Playlist.findAll()
-    .then(users => res.json(users));
+        .then(users => res.json(users));
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
     const userId = req.body.userId || '';
     const user = models.User.findById(userId);
 
     models.Playlist.create({
         user: user
+    }).then((playlist) => res.status(201).json(playlist))
+});
+
+router.post('/remove/:id', function (req, res, next) {
+    const musicId = req.body.musicId || '';
+
+    models.Playlist.destroy({
+        where: musicId
     }).then((playlist) => res.status(201).json(playlist))
 });
 
