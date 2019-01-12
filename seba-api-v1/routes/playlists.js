@@ -5,17 +5,23 @@ const models = require('../models');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-    models.Playlist.findAll()
-    .then(users => res.json(users));
+  models.Playlist.findAll().then(users => res.json(users));
 });
 
 router.post('/', function(req, res, next) {
-    const userId = req.body.userId || '';
-    const user = models.User.findById(userId);
+  const userId = req.body.userId || '';
+  const user = models.User.findById(userId);
 
-    models.Playlist.create({
+  models.Playlist
+    .create(
+      {
         user: user
-    }).then((playlist) => res.status(201).json(playlist))
+      },
+      {
+        include: models.User
+      }
+    )
+    .then(playlist => res.status(201).json(playlist));
 });
 
 module.exports = router;

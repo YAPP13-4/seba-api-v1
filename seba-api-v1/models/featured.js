@@ -1,15 +1,24 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('featured', {
-    type: {
-      type: DataTypes.STRING(100)
+  return sequelize.define(
+    'featured',
+    {
+      id: {
+        type: DataTypes.BIGINT,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      type: {
+        type: DataTypes.STRING(100)
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+        field: 'created_at'
+      }
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-      field: 'created_at'
-    },
-  }, {
-    timestamps: false,
-  });
+    {
+      timestamps: false
+    }
+  );
 };
