@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var playlistsRouter = require('./routes/playlists');
 var musicRouter = require('./routes/musics');
+var dataCreator = require('./models/data-creator');
 
 var sequelize = require('./models').sequelize;
 
@@ -15,10 +16,10 @@ var app = express();
 sequelize
   .sync({ force: true })
   .then(() => {
-    require('./models/data-creator').relationInit();
+    dataCreator.relationInit();
   })
   .then(() => {
-    require('./models/data-creator').dataInit();
+    dataCreator.dataInit();
   });
 
 // view engine setup
