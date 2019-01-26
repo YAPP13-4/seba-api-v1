@@ -13,6 +13,9 @@ const Comment = require('./comment')(sequelize, Sequelize);
 
 module.exports = {
   relationInit: () => {
+    User.hasMany(Music);
+    Music.belongsTo(User);
+
     User.hasOne(Playlist);
     Playlist.belongsTo(User);
 
@@ -26,7 +29,7 @@ module.exports = {
     Playlist.belongsToMany(Music, { through: 'playlist_music' });
 
     Music.hasMany(Featured);
-    Featured.belongsTo(Music);
+    // Featured.belongsTo(Music);
 
     Music.hasMany(Comment);
     Comment.belongsTo(Music);
@@ -44,9 +47,11 @@ module.exports = {
       streamUrl: 'https://api.soundcloud.com/tracks/490398075/stream',
       playCount: 0,
       createdAtSoundcloud: '2018/08/25 09:42:17'
+    }).then(music => {
+      User.create({ name: 'seba2', email: 'seba2@gmail.com', playlist: {} }, { include: Playlist }).then(user => {
+        user.addMusic(music);
+      });
     });
-
-    User.create({ name: 'seba2', email: 'seba2@gmail.com', playlist: {} }, { include: Playlist });
 
     Music.create({
       title: "찌질하다는건 나의 의견이 아니다 Prod.j'san",
@@ -61,6 +66,7 @@ module.exports = {
       createdAtSoundcloud: '2018/12/16 11:30:40'
     }).then(music => {
       User.create({ name: 'seba0', email: 'seba0@gmail.com', playlist: {} }, { include: Playlist }).then(user => {
+        user.addMusic(music);
         Comment.create({ content: 'comment0' }).then(comment => {
           user.addComment(comment);
           music.addComment(comment);
@@ -92,6 +98,7 @@ module.exports = {
         { name: 'seba1', email: 'seba1@gmail.com', playlist: {} },
         { include: Playlist }
       ).then((user, playlist) => {
+        user.addMusic(music);
         user.getPlaylist().then(playlist => playlist.addMusic(music));
 
         Comment.create({ content: 'comment2' }).then(comment => {
