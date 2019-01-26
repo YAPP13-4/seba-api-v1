@@ -9,7 +9,9 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  const {type, time, music} = req.body;
+  const {type, music} = req.body;
+  let time = req.body.time;
+  time = time /1000;
   models.Featured.create({
     type,
     time,
