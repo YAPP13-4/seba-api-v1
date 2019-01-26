@@ -75,16 +75,5 @@ module.exports = {
     User.create({ name: 'seba0', email: 'seba0@gmail.com', playlist: {} }, { include: Playlist });
     User.create({ name: 'seba1', email: 'seba1@gmail.com', playlist: {} }, { include: Playlist });
     User.create({ name: 'seba2', email: 'seba2@gmail.com', playlist: {} }, { include: Playlist });
-
-    // const seba1 = User.findByPk(2);
-
-    // Playlist.bulkCreate(
-    //   [
-    //     { user: seba0},
-    //     { user: seba1},
-    //     { user: seba2},
-    //   ],
-    //   { returning: true }
-    // );
   }
 };
