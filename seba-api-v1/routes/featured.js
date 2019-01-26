@@ -9,15 +9,19 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  const type = req.body.type;
+  const {type, music} = req.body;
+  let time = req.body.time;
+  time = time /1000;
   models.Featured.create({
-    type: type
+    type,
+    time,
+    music
   }).then((featured) => res.status(201).json(featured));
 });
 
 router.get('/:id', function(req,res,next) {
-  const featuredId = req.params.id;
-  models.Featured.findById(featuredId)
+  const music_id = req.params.id;
+  models.Featured.findAll({where: {music_id}})
   .then(featured => res.json(featured));
 });
 module.exports = router;

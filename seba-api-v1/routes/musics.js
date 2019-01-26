@@ -18,18 +18,35 @@ router.post('/', function(req, res, next) {
   let url = req.body.url;
   request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-      let apiGet = JSON.parse(body);
-      models.Music.create({
-        title: apiGet.title,
-        musician: apiGet.user.username,
-        musicianImg: apiGet.user.avatar_url,
-        description: apiGet.description,
-        artworkImg: apiGet.artwork_url,
-        duration: apiGet.duration,
-        streamUrl: apiGet.stream_url,
-        playCount: 0,
-        createdAtSoundcloud: apiGet.created_at
-      }).then((musics) => res.status(201).json(musics));
+      const {title, user, description, artwork_url, duration, stream_url, created_at} = JSON.parse(body);
+      
+      models.Music.findAll({where: {title: title, musician:user.username}})
+      .then(ovelapChecked)
+      .then(dataUpdated)
+      function ovelapChecked(musics) {
+        if(musics.length===0) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+      function dataUpdated(status) {
+        if(!status){
+          models.Music.create({
+            title: title,
+            musician: user.username,
+            musicianImg: user.avatar_url,
+            description: description,
+            artworkImg: artwork_url,
+            duration: duration,
+            streamUrl: stream_url,
+            playCount: 0,
+            createdAtSoundcloud: created_at
+          }).then((music) => res.status(201).json(music));
+        } else {
+          res.sendStatus(500)
+        }
+      }
     }
   })
 })
