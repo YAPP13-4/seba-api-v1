@@ -10,12 +10,6 @@ module.exports = (sequelize, DataTypes) => {
       type: {
         type: DataTypes.STRING(100)
       },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-        field: 'created_at'
-      },
       time: {
         type: DataTypes.INTEGER
       },
