@@ -1,7 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define(
-    "music",
+    'music',
     {
+      id: {
+        type: DataTypes.BIGINT,
+        autoIncrement: true,
+        primaryKey: true
+      },
       title: {
         type: DataTypes.STRING(100),
         allowNull: false
@@ -12,14 +17,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       musicianImg: {
         type: DataTypes.STRING(255),
-        field: "musician_img"
+        field: 'musician_img'
       },
       description: {
         type: DataTypes.TEXT
       },
       artworkImg: {
         type: DataTypes.STRING(255),
-        field: "artwork_img"
+        field: 'artwork_img'
       },
       duration: {
         type: DataTypes.INTEGER,
@@ -28,21 +33,21 @@ module.exports = (sequelize, DataTypes) => {
       streamUrl: {
         type: DataTypes.STRING(255),
         allowNull: false,
-        field: "stream_url"
+        field: 'stream_url'
       },
       playCount: {
         type: DataTypes.INTEGER,
-        field: "play_count"
+        field: 'play_count'
       },
       createdAtSoundcloud: {
         type: DataTypes.DATE,
-        field: "created_at_soundcloud"
+        field: 'created_at_soundcloud'
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
-        field: "created_at"
+        field: 'created_at'
       }
     },
     {
