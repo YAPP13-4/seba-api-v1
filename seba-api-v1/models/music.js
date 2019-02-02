@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
       description: {
         type: DataTypes.TEXT
       },
+      lylic: {
+        type: DataTypes.TEXT
+      },
       artworkImg: {
         type: DataTypes.STRING(255),
         field: 'artwork_img'
@@ -29,6 +32,12 @@ module.exports = (sequelize, DataTypes) => {
       duration: {
         type: DataTypes.INTEGER,
         allowNull: false
+      },
+      url: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+        unique: true,
+        field: 'url'
       },
       streamUrl: {
         type: DataTypes.STRING(255),
@@ -52,6 +61,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       timestamps: false
+    },
+    {
+      indexes: [
+        // Create a unique index
+        {
+          unique: true,
+          fields: ['url']
+        }
+      ]
     }
   );
 };
