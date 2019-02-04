@@ -1,65 +1,5 @@
 'use strict';
 
-const musicProperties = {
-    id: { type: 'integer', format: "int64" },
-    title: { type: 'string' },
-    musician: { type: 'string' },
-    musicianImg: { type: 'string' },
-    description: { type: 'string' },
-    artworkImg: { type: 'string' },
-    duration: { type: 'integer' },
-    streamUrl: { type: 'string' },
-    playCount: { type: 'integer' },
-    createdAtSoundcloud: { type: 'string', format: "date" },
-    createdAt: { type: 'string', format: "date" },
-};
-
-const featuredProperties = {
-    id: { type: 'integer', format: "int64" },
-    type: {
-        type: 'string',
-        enum: [
-            "FLOW",
-            "PUNCHLINE",
-            "BEAT"
-        ]
-    },
-    time: { type: 'string' },
-    createdAt: { type: 'string', format: "date" }
-};
-
-const commentProperties = {
-    id: { type: 'integer', format: "int64" },
-    content: { type: 'string' },
-    createdAt: { type: 'string', format: "date" }
-};
-
-const musicDetailProperties = {
-    id: { type: 'integer', format: "int64" },
-    title: { type: 'string' },
-    musician: { type: 'string' },
-    musicianImg: { type: 'string' },
-    description: { type: 'string' },
-    artworkImg: { type: 'string' },
-    duration: { type: 'integer' },
-    streamUrl: { type: 'string' },
-    playCount: { type: 'integer' },
-    createdAtSoundcloud: { type: 'string', format: "date" },
-    createdAt: { type: 'string', format: "date" },
-    featureds: {
-        type: 'array',
-        items: {
-            $ref: "#/definitions/Featured"
-        }
-    },
-    comments: {
-        type: 'array',
-        items: {
-            $ref: "#/definitions/Comment"
-        }
-    }
-}
-
 module.exports = {
     swaggerDefinition: {
         // 정보
@@ -113,19 +53,71 @@ module.exports = {
         definitions:
         {
             'Music': {
-                properties: musicProperties,
+                properties: {
+                    id: { type: 'integer', format: "int64" },
+                    title: { type: 'string' },
+                    musician: { type: 'string' },
+                    musicianImg: { type: 'string' },
+                    description: { type: 'string' },
+                    artworkImg: { type: 'string' },
+                    duration: { type: 'integer' },
+                    streamUrl: { type: 'string' },
+                    playCount: { type: 'integer' },
+                    createdAtSoundcloud: { type: 'string', format: "date" },
+                    createdAt: { type: 'string', format: "date" },
+                },
                 type: 'object'
             },
             'Featured': {
-                properties: featuredProperties,
-                type: 'object'
-            },
-            'MusicDetail': {
-                properties: musicDetailProperties,
+                properties: {
+                    id: { type: 'integer', format: "int64" },
+                    type: {
+                        type: 'string',
+                        enum: [
+                            "FLOW",
+                            "PUNCHLINE",
+                            "BEAT"
+                        ]
+                    },
+                    time: { type: 'string' },
+                    createdAt: { type: 'string', format: "date" }
+                },
                 type: 'object'
             },
             'Comment': {
-                properties: commentProperties,
+                properties: {
+                    id: { type: 'integer', format: "int64" },
+                    content: { type: 'string' },
+                    createdAt: { type: 'string', format: "date" }
+                },
+                type: 'object'
+            },
+            'MusicDetail': {
+                properties: {
+                    id: { type: 'integer', format: "int64" },
+                    title: { type: 'string' },
+                    musician: { type: 'string' },
+                    musicianImg: { type: 'string' },
+                    description: { type: 'string' },
+                    artworkImg: { type: 'string' },
+                    duration: { type: 'integer' },
+                    streamUrl: { type: 'string' },
+                    playCount: { type: 'integer' },
+                    createdAtSoundcloud: { type: 'string', format: "date" },
+                    createdAt: { type: 'string', format: "date" },
+                    featureds: {
+                        type: 'array',
+                        items: {
+                            $ref: "#/definitions/Featured"
+                        }
+                    },
+                    comments: {
+                        type: 'array',
+                        items: {
+                            $ref: "#/definitions/Comment"
+                        }
+                    }
+                },
                 type: 'object'
             }
         }
