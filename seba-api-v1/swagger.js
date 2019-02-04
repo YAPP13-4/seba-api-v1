@@ -119,6 +119,16 @@ module.exports = {
                     }
                 },
                 type: 'object'
+            },
+            'MusicRegisterForm': {
+                properties: {
+                    url: { type: 'string' },
+                    title: { type: 'string' },
+                    musician: { type: 'string' },
+                    description: { type: 'string' },
+                    artworkImg: { type: 'string' },
+                    lylic: { type: 'string' }
+                }
             }
         }
     },
