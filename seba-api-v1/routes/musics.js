@@ -42,6 +42,7 @@ router.get('/seba-choice', function (req, res, next) {
 
 /**
  * @swagger
+
  * /musics/register-form:
  *   get:
  *     summary: url로 등록할 music data 가져오기
