@@ -4,11 +4,11 @@ var router = express.Router();
 const models = require('../models');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   models.User.findAll().then(users => res.json(users));
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
   const name = req.body.name;
   const email = req.body.email;
 

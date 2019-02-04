@@ -42,13 +42,20 @@ app.use('/playlists', playlistsRouter);
 app.use('/musics', musicRouter);
 app.use('/featured', featuredRouter);
 
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerOption = require('./swagger');
+const swaggerSpec = swaggerJSDoc(swaggerOption);
+const swaggerUi = require('swagger-ui-express');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
