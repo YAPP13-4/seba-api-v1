@@ -61,7 +61,7 @@ router.post('/', function (req, res, next) {
     } else {
       request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (error, response, body) {
         if (!error && response.statusCode === 200) {
-          const { title, user, description, artwork_url, duration, stream_url, created_at } = JSON.parse(body);
+          let { title, user, description, artwork_url, duration, stream_url, created_at } = JSON.parse(body);
 
           title = req.body.title ? req.body.title : title;
           user.username = req.body.musician ? req.body.musician : user.username;
