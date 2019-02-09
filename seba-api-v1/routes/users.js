@@ -7,11 +7,11 @@ const models = require('../models');
 const UNSPLASH_CLIENT_ID = 'a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf';
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
+router.get('/', function(req, res, next) {
   models.User.findAll().then(users => res.json(users));
 });
 
-router.post('/', function (req, res, next) {
+router.post('/', function(req, res, next) {
   const name = req.body.name;
   const email = req.body.email;
 
@@ -47,23 +47,37 @@ router.post('/', function (req, res, next) {
  *       200:
  *         description: 성공
  *         schema:
- *           type: "array"
- *           items:
- *             type: "string"
+ *           type: "object"
+ *           properties:
+ *             total:
+ *               type: "integer"
+ *               format: "int64"
+ *             totalPages:
+ *               type: "integer"
+ *             imageUrls:
+ *               type: "array"
+ *               items:
+ *                 type: "string"  
  */
-router.get('/unsplash-images', function (req, res) {
+router.get('/unsplash-images', function(req, res) {
   const keyword = req.query.keyword;
   const page = req.query.page;
-  request(`https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      const { results } = JSON.parse(body);
+  request(
+    `https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`,
+    function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        const { total, total_pages, results } = JSON.parse(body);
 
-      const imageList = [];
-      results.forEach(result => imageList.push(result.urls.small));
+        const response = {};
+        response.total = total;
+        response.totalPages = total_pages;
+        response.imageUrls = [];
+        results.forEach(result => response.imageUrls.push(result.urls.small));
 
-      res.status(200).json(imageList);
+        res.status(200).json(response);
+      }
     }
-  });
+  );
 });
 
 module.exports = router;
