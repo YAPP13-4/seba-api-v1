@@ -28,10 +28,12 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  const content = req.body.content;
+  const {content, selected_time, user }= req.body;
   models.Comment
     .create({
-      content: content
+      content,
+      selectedTime: selected_time,
+      user
     })
     .then(comments => res.status(201).json(comments));
 });
