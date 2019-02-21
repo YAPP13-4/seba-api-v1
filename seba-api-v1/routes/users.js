@@ -7,11 +7,16 @@ const models = require('../models');
 const UNSPLASH_CLIENT_ID = 'a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf';
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  models.User.findAll().then(users => res.json(users));
+router.get('/', ensureAuthenticated, function (req, res, next) {
+  res.render('user', { user: req.user });
 });
 
-router.post('/', function(req, res, next) {
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+}
+
+router.post('/', function (req, res, next) {
   const name = req.body.name;
   const email = req.body.email;
 
@@ -59,12 +64,12 @@ router.post('/', function(req, res, next) {
  *               items:
  *                 type: "string"  
  */
-router.get('/unsplash-images', function(req, res) {
+router.get('/unsplash-images', function (req, res) {
   const keyword = req.query.keyword;
   const page = req.query.page;
   request(
     `https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`,
-    function(error, response, body) {
+    function (error, response, body) {
       if (!error && response.statusCode === 200) {
         const { total, total_pages, results } = JSON.parse(body);
 
