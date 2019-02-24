@@ -3,6 +3,10 @@ module.exports = (sequelize, DataTypes) => {
     content: {
       type: DataTypes.STRING(255)
     },
+    selectedTime: {
+      type: DataTypes.INTEGER,
+      field: 'selected_time'
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,

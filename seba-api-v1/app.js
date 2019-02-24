@@ -10,6 +10,7 @@ var usersRouter = require('./routes/users');
 var playlistsRouter = require('./routes/playlists');
 var musicRouter = require('./routes/musics');
 var featuredRouter = require('./routes/featured');
+var commentRouter = require('./routes/comments');
 
 var dataCreator = require('./models/data-creator');
 
@@ -41,6 +42,7 @@ app.use('/users', usersRouter);
 app.use('/playlists', playlistsRouter);
 app.use('/musics', musicRouter);
 app.use('/featured', featuredRouter);
+app.use('/comments', commentRouter);
 
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerOption = require('./swagger');
@@ -50,12 +52,12 @@ const swaggerUi = require('swagger-ui-express');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
