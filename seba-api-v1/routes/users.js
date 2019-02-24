@@ -6,6 +6,9 @@ const models = require('../models');
 
 const UNSPLASH_CLIENT_ID = 'a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf';
 
+const NODE_ENV = process.env.NODE_ENV;
+const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
+
 /* GET users listing. */
 router.get('/mypage', ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
@@ -14,7 +17,7 @@ router.get('/mypage', ensureAuthenticated, function (req, res, next) {
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login')
+  res.redirect(301, FRONT_HOST + '/sign');
 }
 
 router.post('/', function (req, res, next) {
