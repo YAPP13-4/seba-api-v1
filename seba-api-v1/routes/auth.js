@@ -5,6 +5,9 @@ var passportFacebook = require('../auth/facebook');
 
 const models = require('../models');
 
+const NODE_ENV = process.env.NODE_ENV;
+const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
+
 /* FACEBOOK ROUTER */
 router.get('/facebook',
     passportFacebook.authenticate('facebook', { scope: 'email' }));
@@ -16,9 +19,9 @@ router.get('/facebook/callback',
         models.User.findOne({ where: { email: userEmail } })
             .then(user => {
                 if (user) {
-                    res.redirect('/musics/seba-choice');
+                    res.redirect(301, FRONT_HOST + '/musics/seba-choice');
                 } else {
-                    res.redirect('/signup');
+                    res.redirect(301, FRONT_HOST + '/signup');
                 }
             });
     });
