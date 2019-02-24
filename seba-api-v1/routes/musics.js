@@ -22,18 +22,18 @@ const clientId = 'a281614d7f34dc30b665dfcaa3ed7505';
  *           items:
  *             $ref: "#/definitions/Music"
  */
-router.get('/seba-choice', function(req, res, next) {
+router.get('/seba-choice', function (req, res, next) {
   models.Music
     .findAll({
       where: {
-        id: { [Op.lte]: 20 }
-      },
-      include: [
-        {
-          model: models.Featured,
-          required: false
+        id: {
+          [Op.lte]: 20
         }
-      ]
+      },
+      include: [{
+        model: models.Featured,
+        required: false
+      }]
     })
     .then(musics => {
       res.json(musics);
@@ -60,23 +60,32 @@ router.get('/seba-choice', function(req, res, next) {
  *       400:
  *         description: 이미 등록된 url 입력
  */
-router.get('/register-form', function(req, res) {
+router.get('/register-form', function (req, res) {
   const url = req.query.url;
   models.Music
     .findOne({
-      where: { url: url }
+      where: {
+        url: url
+      }
     })
     .then(music => {
       if (music) {
-        res.status(400).json({ error: '이미 존재하는 url 입니다' });
+        res.status(400).json({
+          error: '이미 존재하는 url 입니다'
+        });
       } else {
-        request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function(
+        request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (
           error,
           response,
           body
         ) {
           if (!error && response.statusCode === 200) {
-            const { title, user, description, artwork_url } = JSON.parse(body);
+            const {
+              title,
+              user,
+              description,
+              artwork_url
+            } = JSON.parse(body);
             res.status(200).json({
               title: title,
               musician: user.username,
@@ -115,24 +124,36 @@ router.get('/register-form', function(req, res) {
  *         description: 음악정보가 없는 url 입력
  */
 
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
   const url = req.body.url;
 
   models.Music
     .findOne({
-      where: { url: url }
+      where: {
+        url: url
+      }
     })
     .then(music => {
       if (music) {
-        res.status(400).json({ error: '이미 존재하는 url 입니다' });
+        res.status(400).json({
+          error: '이미 존재하는 url 입니다'
+        });
       } else {
-        request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function(
+        request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (
           error,
           response,
           body
         ) {
           if (!error && response.statusCode === 200) {
-            let { title, user, description, artwork_url, duration, stream_url, created_at } = JSON.parse(body);
+            let {
+              title,
+              user,
+              description,
+              artwork_url,
+              duration,
+              stream_url,
+              created_at
+            } = JSON.parse(body);
 
             title = req.body.title ? req.body.title : title;
             user.username = req.body.musician ? req.body.musician : user.username;
@@ -155,7 +176,9 @@ router.post('/', function(req, res, next) {
               })
               .then(music => res.status(201).json(music));
           } else {
-            res.status(404).json({ error: '유효하지 않은 url입니다.' });
+            res.status(404).json({
+              error: '유효하지 않은 url입니다.'
+            });
           }
         });
       }
@@ -182,14 +205,16 @@ router.post('/', function(req, res, next) {
  *       404:
  *         description: 해당 음악이 없음
  */
-router.get('/:id', function(req, res, next) {
+router.get('/:id', function (req, res, next) {
   const id = req.params.id;
 
   const result = {};
 
   models.Music.findByPk(id).then(music => {
     if (!music) {
-      res.status(404).json({ error: '해당 음악이 없습니다.' });
+      res.status(404).json({
+        error: '해당 음악이 없습니다.'
+      });
       return;
     }
     result.music = music;
@@ -208,4 +233,20 @@ router.get('/:id', function(req, res, next) {
   });
 });
 
+router.get("/rank/featured", function (req, res, next) {
+  const musicType = req.query.type;
+  models.Featured.findAll({
+      where: {
+        type: musicType
+      },
+      include: {
+        model: models.Music,
+        required: true
+      },
+      raw: true
+    })
+    .then(featured => {
+      res.json(featured)
+    });
+});
 module.exports = router;

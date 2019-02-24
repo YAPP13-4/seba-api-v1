@@ -34,21 +34,4 @@ router.get("/:id", function (req, res, next) {
     }
   }).then(featured => res.json(featured))
 })
-
-router.get("/type/:data", function (req, res, next) {
-  const music_type = req.params.data
-  models.Featured.findAll({
-      where: {
-        type: music_type
-      },
-      include: {
-        model: models.Music,
-        required: true
-      },
-      raw: true
-    })
-    .then(featured => {
-      res.json(featured)
-    });
-})
 module.exports = router
