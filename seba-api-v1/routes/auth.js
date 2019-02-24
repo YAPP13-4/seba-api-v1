@@ -16,8 +16,7 @@ router.get('/facebook/callback',
         models.User.findOne({ where: { email: userEmail } })
             .then(user => {
                 if (user) {
-                    res.redirect('/musics');
-                    res.cookie('SESSION', req.user.accessToken);
+                    res.redirect('/musics/seba-choice');
                 } else {
                     res.redirect('/signup');
                 }

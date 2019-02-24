@@ -7,8 +7,9 @@ const models = require('../models');
 const UNSPLASH_CLIENT_ID = 'a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf';
 
 /* GET users listing. */
-router.get('/', ensureAuthenticated, function (req, res, next) {
-  res.render('user', { user: req.user });
+router.get('/mypage', ensureAuthenticated, function (req, res, next) {
+  const email = req.user.email;
+  models.User.findOne({ where: { email } }).then(user => res.json(user));
 });
 
 function ensureAuthenticated(req, res, next) {
@@ -64,7 +65,7 @@ router.post('/', function (req, res, next) {
  *               items:
  *                 type: "string"  
  */
-router.get('/unsplash-images', function (req, res) {
+router.get('/unsplash-images', ensureAuthenticated, function (req, res) {
   const keyword = req.query.keyword;
   const page = req.query.page;
   request(

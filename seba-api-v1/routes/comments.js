@@ -5,7 +5,12 @@ const models = require('../models');
 
 const FIND_SIZE = 10;
 
-router.get('/', function(req, res, next) {
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+}
+
+router.get('/', function (req, res, next) {
   const pageNum = req.query.page; // 요청 페이지 넘버
   let offset = 0;
 
@@ -27,8 +32,8 @@ router.get('/', function(req, res, next) {
     .then(comments => res.json(comments));
 });
 
-router.post('/', function(req, res, next) {
-  const {content, selected_time, user }= req.body;
+router.post('/', ensureAuthenticated, function (req, res, next) {
+  const { content, selected_time, user } = req.body;
   models.Comment
     .create({
       content,
@@ -38,7 +43,7 @@ router.post('/', function(req, res, next) {
     .then(comments => res.status(201).json(comments));
 });
 
-router.get('/:id', function(req, res, next) {
+router.get('/:id', function (req, res, next) {
   const commentId = req.params.id;
   models.Comment.findById(commentId).then(comments => res.json(comments));
 });
