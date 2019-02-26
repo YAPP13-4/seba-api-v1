@@ -15,24 +15,85 @@ db.Playlist = require('./playlist')(sequelize, Sequelize);
 db.Featured = require('./featured')(sequelize, Sequelize);
 db.Comment = require('./comment')(sequelize, Sequelize);
 
-db.User.hasMany(db.Music);
+db.User.hasMany(db.Music, {
+  foreignKey: {
+    name: 'userId',
+    field: 'user_id'
+  }
+});
+db.Music.belongsTo(db.User, {
+  foreignKey: {
+    name: 'userId',
+    field: 'user_id'
+  }
+});
 
-db.User.hasOne(db.Playlist);
-db.Playlist.belongsTo(db.User);
+db.User.hasOne(db.Playlist, {
+  foreignKey: {
+    name: 'userId',
+    field: 'user_id'
+  }
+});
+db.Playlist.belongsTo(db.User, {
+  foreignKey: {
+    name: 'userId',
+    field: 'user_id'
+  }
+});
 
-db.User.hasMany(db.Comment);
-db.Comment.belongsTo(db.User);
+db.User.hasMany(db.Comment, {
+  foreignKey: {
+    name: 'userId',
+    field: 'user_id'
+  }
+});
+db.Comment.belongsTo(db.User, {
+  foreignKey: {
+    name: 'userId',
+    field: 'user_id'
+  }
+});
 
-db.User.hasMany(db.Featured);
-db.Featured.belongsTo(db.User);
+db.User.hasMany(db.Featured, {
+  foreignKey: {
+    name: 'userId',
+    field: 'user_id'
+  }
+});
+db.Featured.belongsTo(db.User, {
+  foreignKey: {
+    name: 'userId',
+    field: 'user_id'
+  }
+});
 
 db.Music.belongsToMany(db.Playlist, { through: 'playlist_music' });
 db.Playlist.belongsToMany(db.Music, { through: 'playlist_music' });
 
-db.Music.hasMany(db.Featured);
-db.Featured.belongsTo(db.Music);
+db.Music.hasMany(db.Featured, {
+  foreignKey: {
+    name: 'musicId',
+    field: 'music_id'
+  }
+});
+db.Featured.belongsTo(db.Music, {
+  foreignKey: {
+    name: 'musicId',
+    field: 'music_id'
+  }
+});
 
-db.Music.hasMany(db.Comment);
-db.Comment.belongsTo(db.Music);
+db.Music.hasMany(db.Comment, {
+  foreignKey: {
+    name: 'musicId',
+    field: 'music_id'
+  }
+});
+db.Comment.belongsTo(db.Music, {
+  foreignKey: {
+    name: 'musicId',
+    field: 'music_id'
+  }
+});
 
 module.exports = db;

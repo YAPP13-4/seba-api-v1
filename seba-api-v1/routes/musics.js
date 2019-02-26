@@ -10,8 +10,12 @@ const clientId = 'a281614d7f34dc30b665dfcaa3ed7505';
 const NODE_ENV = process.env.NODE_ENV;
 const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
 
+const FIND_SIZE = 10;
+
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
+  if (req.isAuthenticated()) {
+    return next();
+  }
   res.redirect(301, FRONT_HOST + '/sign');
 }
 
@@ -30,7 +34,7 @@ function ensureAuthenticated(req, res, next) {
  *           items:
  *             $ref: "#/definitions/Music"
  */
-router.get('/seba-choice', function (req, res, next) {
+router.get('/seba-choice', function(req, res, next) {
   models.Music
     .findAll({
       where: {
@@ -68,7 +72,7 @@ router.get('/seba-choice', function (req, res, next) {
  *       400:
  *         description: 이미 등록된 url 입력
  */
-router.get('/register-form', ensureAuthenticated, function (req, res) {
+router.get('/register-form', ensureAuthenticated, function(req, res) {
   const url = req.query.url;
   models.Music
     .findOne({
@@ -78,7 +82,7 @@ router.get('/register-form', ensureAuthenticated, function (req, res) {
       if (music) {
         res.status(400).json({ error: '이미 존재하는 url 입니다' });
       } else {
-        request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (
+        request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function(
           error,
           response,
           body
@@ -123,7 +127,7 @@ router.get('/register-form', ensureAuthenticated, function (req, res) {
  *         description: 음악정보가 없는 url 입력
  */
 
-router.post('/', ensureAuthenticated, function (req, res, next) {
+router.post('/', ensureAuthenticated, function(req, res, next) {
   const url = req.body.url;
 
   const curUser = req.user;
@@ -137,7 +141,7 @@ router.post('/', ensureAuthenticated, function (req, res, next) {
         if (music) {
           res.status(400).json({ error: '이미 존재하는 url 입니다' });
         } else {
-          request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (
+          request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function(
             error,
             response,
             body
@@ -197,7 +201,7 @@ router.post('/', ensureAuthenticated, function (req, res, next) {
  *       404:
  *         description: 해당 음악이 없음
  */
-router.get('/:id', function (req, res, next) {
+router.get('/:id', function(req, res, next) {
   const id = req.params.id;
 
   const result = {};
@@ -221,6 +225,32 @@ router.get('/:id', function (req, res, next) {
         res.status(200).json(result);
       });
   });
+});
+
+router.get('/:id/comments', function(req, res, next) {
+  const musicId = req.params.id;
+  const pageNum = req.query.page; // 요청 페이지 넘버
+  let offset = 0;
+
+  if (pageNum > 1) {
+    offset = FIND_SIZE * (pageNum - 1);
+  }
+
+  models.Comment
+    .findAll({
+      offset: offset,
+      limit: FIND_SIZE,
+      include: [
+        {
+          model: models.User,
+          required: true
+        }
+      ],
+      where: {
+        musicId
+      }
+    })
+    .then(comments => res.json(comments));
 });
 
 module.exports = router;
