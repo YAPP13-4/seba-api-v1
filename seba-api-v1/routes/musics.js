@@ -250,7 +250,15 @@ router.get('/:id/comments', function(req, res, next) {
         musicId
       }
     })
-    .then(comments => res.json(comments));
+    .then(comments => {
+      models.Comment
+        .count({
+          where: {
+            musicId
+          }
+        })
+        .then(commentsCount => res.json({ commentsCount, comments }));
+    });
 });
 
 module.exports = router;
