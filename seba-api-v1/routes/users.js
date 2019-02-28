@@ -15,7 +15,72 @@ router.get('/mypage', ensureAuthenticated, function (req, res, next) {
   models.User.findOne({ where: { email } }).then(user => res.json(user));
 });
 
+router.get('/musics', ensureAuthenticated, function (req, res, next) {
+  const email = req.query.email;
+  models.Music.findOne({
+    include: [
+      {
+        model: models.User,
+        required: true,
+        where: {
+          email
+        }
+      }
+    ]
+  }).then(musics => {
+    res.status(200);
+    res.json(musics);
+  });
+});
+
+router.get('/featureds', ensureAuthenticated, function (req, res, next) {
+  const email = req.query.email;
+  models.Music.findAll({
+    include: [
+      {
+        model: models.Featured,
+        required: true,
+        include: [{
+          model: models.User,
+          required: true,
+          where: {
+            email
+          }
+        }]
+      }
+    ]
+  }).then(musics => {
+    res.status(200);
+    res.json(musics);
+  });
+})
+
+router.get('/playlist', ensureAuthenticated, function (req, res, next) {
+  const email = req.query.email;
+  models.Music.findAll({
+    include: [
+      {
+        model: models.Playlist,
+        required: true,
+        include: [{
+          model: models.User,
+          required: true,
+          where: {
+            email
+          }
+        }]
+      }
+    ]
+  }).then(musics => {
+    res.status(200);
+    res.json(musics);
+  });
+})
+
 function ensureAuthenticated(req, res, next) {
+  if (NODE_ENV !== 'production') {
+    return next();
+  }
   if (req.isAuthenticated()) { return next(); }
   res.redirect(301, FRONT_HOST + '/sign');
 }

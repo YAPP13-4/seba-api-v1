@@ -76,7 +76,7 @@ module.exports = {
       artworkImg: 'https://i1.sndcdn.com/artworks-000459236814-60fz1f-large.jpg',
       duration: 108627,
       url: 'https://soundcloud.com/42kgb/loveshitcantloveher',
-      streamUrl: 'https://api.soundcloud.com/tracks/545706672',
+      streamUrl: 'https://api.soundcloud.com/tracks/545706672/stream',
       playCount: 0,
       createdAtSoundcloud: '2018/12/16 11:30:40'
     }).then(music => {
