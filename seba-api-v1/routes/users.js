@@ -217,4 +217,22 @@ router.put("/sns", ensureAuthenticated, function (req, res, next) {
   });
 });
 
+router.put('/background-img', ensureAuthenticated, function (req, res, next) {
+  const backgroundImg = req.body.backgroundImg;
+  const email = req.user.email;
+
+  models.User.update(
+    {
+      backgroundImg
+    },
+    {
+      where: {
+        email
+      }
+    }
+  ).then(user => {
+    res.status(200).json(user);
+  })
+});
+
 module.exports = router;

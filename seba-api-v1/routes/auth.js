@@ -18,14 +18,24 @@ router.get('/facebook/callback',
         const name = req.user.name;
         const email = req.user.email;
 
-        models.User.create(
-            {
-                name: name,
-                email: email,
-                playlist: {}
-            },
-            { include: models.Playlist }
-        ).then(user => res.status(201).json(user));
+        models.user.findOne({
+            where: {
+                email
+            }
+        }).then(user => {
+            if (user) {
+                res.redirect(FRONT_HOST + '/main')
+            } else {
+                models.User.create(
+                    {
+                        name: name,
+                        email: email,
+                        playlist: {}
+                    },
+                    { include: models.Playlist }
+                ).then(user => res.redirect(FRONT_HOST + '/main'));
+            }
+        })
     });
 
 module.exports = router;

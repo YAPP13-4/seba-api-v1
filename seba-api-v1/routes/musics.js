@@ -44,6 +44,7 @@ function ensureAuthenticated(req, res, next) {
  *           items:
  *             $ref: "#/definitions/Music"
  */
+
 router.get("/seba-choice", function(req, res, next) {
   models.Music.findAll({
     order: [sequelize.fn("RAND")],
@@ -156,16 +157,21 @@ router.post("/", ensureAuthenticated, function(req, res, next) {
 
   const curUser = req.user;
 
-  models.User.findOne({ where: { email: curUser.email } }).then(user => {
-    models.Music.findOne({
-      where: { url: url }
-    }).then(music => {
-      if (music) {
-        res.status(400).json({ error: "이미 존재하는 url 입니다" });
-      } else {
-        request(
-          `https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`,
-          function(error, response, body) {
+
+  models.User.findOne({ where: { email: curUser.email } }).then(dbUser => {
+    models.Music
+      .findOne({
+        where: { url: url }
+      })
+      .then(music => {
+        if (music) {
+          res.status(400).json({ error: '이미 존재하는 url 입니다' });
+        } else {
+          request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (
+            error,
+            response,
+            body
+          ) {
             if (!error && response.statusCode === 200) {
               let {
                 title,
@@ -188,22 +194,24 @@ router.post("/", ensureAuthenticated, function(req, res, next) {
                 ? req.body.artworkImg
                 : artwork_url;
 
-              models.Music.create({
-                title: title,
-                musician: user.username,
-                musicianImg: user.avatar_url,
-                description: description,
-                lylic: req.body.lylic,
-                artworkImg: artwork_url,
-                duration: duration,
-                url: url,
-                streamUrl: stream_url,
-                playCount: 0,
-                createdAtSoundcloud: created_at
-              }).then(music => {
-                user.addMusic(music);
-                res.status(201).json(music);
-              });
+              models.Music
+                .create({
+                  title: title,
+                  musician: user.username,
+                  musicianImg: user.avatar_url,
+                  description: description,
+                  lylic: req.body.lylic,
+                  artworkImg: artwork_url,
+                  duration: duration,
+                  url: url,
+                  streamUrl: stream_url,
+                  playCount: 0,
+                  createdAtSoundcloud: created_at
+                })
+                .then(music => {
+                  dbUser.addMusic(music);
+                  res.status(201).json(music);
+                });
             } else {
               res.status(404).json({ error: "유효하지 않은 url입니다." });
             }
