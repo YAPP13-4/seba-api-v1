@@ -1,21 +1,25 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var request = require('request');
+var request = require("request");
 
-const models = require('../models');
+const models = require("../models");
 
-const UNSPLASH_CLIENT_ID = 'a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf';
+const UNSPLASH_CLIENT_ID =
+  "a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf";
 
 const NODE_ENV = process.env.NODE_ENV;
-const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
+const FRONT_HOST =
+  NODE_ENV === "production"
+    ? "https://semibasement.com"
+    : "http://localhost:3000";
 
 /* GET users listing. */
-router.get('/mypage', ensureAuthenticated, function (req, res, next) {
+router.get("/mypage", ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   models.User.findOne({ where: { email } }).then(user => res.json(user));
 });
 
-router.get('/musics', ensureAuthenticated, function (req, res, next) {
+router.get("/musics", ensureAuthenticated, function(req, res, next) {
   const email = req.query.email;
   models.Music.findOne({
     include: [
@@ -33,72 +37,76 @@ router.get('/musics', ensureAuthenticated, function (req, res, next) {
   });
 });
 
-router.get('/featureds', ensureAuthenticated, function (req, res, next) {
+router.get("/featureds", ensureAuthenticated, function(req, res, next) {
   const email = req.query.email;
   models.Music.findAll({
     include: [
       {
         model: models.Featured,
         required: true,
-        include: [{
-          model: models.User,
-          required: true,
-          where: {
-            email
+        include: [
+          {
+            model: models.User,
+            required: true,
+            where: {
+              email
+            }
           }
-        }]
+        ]
       }
     ]
   }).then(musics => {
     res.status(200);
     res.json(musics);
   });
-})
+});
 
-router.get('/playlist', ensureAuthenticated, function (req, res, next) {
+router.get("/playlist", ensureAuthenticated, function(req, res, next) {
   const email = req.query.email;
   models.Music.findAll({
     include: [
       {
         model: models.Playlist,
         required: true,
-        include: [{
-          model: models.User,
-          required: true,
-          where: {
-            email
+        include: [
+          {
+            model: models.User,
+            required: true,
+            where: {
+              email
+            }
           }
-        }]
+        ]
       }
     ]
   }).then(musics => {
     res.status(200);
     res.json(musics);
   });
-})
+});
 
 function ensureAuthenticated(req, res, next) {
-  if (NODE_ENV !== 'production') {
+  if (NODE_ENV !== "production") {
     return next();
   }
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect(301, FRONT_HOST + '/sign');
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect(301, FRONT_HOST + "/sign");
 }
 
-router.post('/', function (req, res, next) {
+router.post("/", function(req, res, next) {
   const name = req.body.name;
   const email = req.body.email;
 
-  models.User
-    .create(
-      {
-        name: name,
-        email: email,
-        playlist: {}
-      },
-      { include: models.Playlist }
-    )
-    .then(user => res.status(201).json(user));
+  models.User.create(
+    {
+      name: name,
+      email: email,
+      playlist: {}
+    },
+    { include: models.Playlist }
+  ).then(user => res.status(201).json(user));
 });
 
 /**
@@ -133,12 +141,12 @@ router.post('/', function (req, res, next) {
  *               items:
  *                 type: "string"  
  */
-router.get('/unsplash-images', ensureAuthenticated, function (req, res) {
+router.get("/unsplash-images", ensureAuthenticated, function(req, res) {
   const keyword = req.query.keyword;
   const page = req.query.page;
   request(
     `https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`,
-    function (error, response, body) {
+    function(error, response, body) {
       if (!error && response.statusCode === 200) {
         const { total, total_pages, results } = JSON.parse(body);
 
@@ -152,6 +160,25 @@ router.get('/unsplash-images', ensureAuthenticated, function (req, res) {
       }
     }
   );
+});
+
+// mypage name 수정
+router.post("/modifi-name", function(req, res, next) {
+  const email = req.body.email;
+  const name = req.body.name;
+
+  models.User.update(
+    {
+      name: name
+    },
+    {
+      where: {
+        email: email
+      }
+    }
+  ).then(result => {
+    res.status(200).json(result);
+  });
 });
 
 module.exports = router;
