@@ -11,22 +11,24 @@ const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'htt
 
 /* GET users listing. */
 router.get('/mypage', ensureAuthenticated, function (req, res, next) {
-  const email = req.user.email;
-  models.User.findOne({ where: { email } }).then(user => res.json(user));
+  const email = req.query.email;
+  models.User.findOne({
+    where: {
+      email
+    }
+  }).then(user => res.json(user));
 });
 
 router.get('/musics', ensureAuthenticated, function (req, res, next) {
   const email = req.query.email;
   models.Music.findOne({
-    include: [
-      {
-        model: models.User,
-        required: true,
-        where: {
-          email
-        }
+    include: [{
+      model: models.User,
+      required: true,
+      where: {
+        email
       }
-    ]
+    }]
   }).then(musics => {
     res.status(200);
     res.json(musics);
@@ -36,19 +38,17 @@ router.get('/musics', ensureAuthenticated, function (req, res, next) {
 router.get('/featureds', ensureAuthenticated, function (req, res, next) {
   const email = req.query.email;
   models.Music.findAll({
-    include: [
-      {
-        model: models.Featured,
+    include: [{
+      model: models.Featured,
+      required: true,
+      include: [{
+        model: models.User,
         required: true,
-        include: [{
-          model: models.User,
-          required: true,
-          where: {
-            email
-          }
-        }]
-      }
-    ]
+        where: {
+          email
+        }
+      }]
+    }]
   }).then(musics => {
     res.status(200);
     res.json(musics);
@@ -58,19 +58,31 @@ router.get('/featureds', ensureAuthenticated, function (req, res, next) {
 router.get('/playlist', ensureAuthenticated, function (req, res, next) {
   const email = req.query.email;
   models.Music.findAll({
-    include: [
-      {
-        model: models.Playlist,
+    include: [{
+      model: models.Playlist,
+      required: true,
+      include: [{
+        model: models.User,
         required: true,
-        include: [{
-          model: models.User,
-          required: true,
-          where: {
-            email
-          }
-        }]
-      }
-    ]
+        where: {
+          email
+        }
+      }]
+    }]
+  }).then(musics => {
+    res.status(200);
+    res.json(musics);
+  });
+})
+
+router.post('/playlist', ensureAuthenticated, function (req, res, next) {
+  const {
+    created_at,
+    music
+  } = req.body;
+  models.Playlist.create({
+    created_at,
+    music
   }).then(musics => {
     res.status(200);
     res.json(musics);
@@ -81,7 +93,9 @@ function ensureAuthenticated(req, res, next) {
   if (NODE_ENV !== 'production') {
     return next();
   }
-  if (req.isAuthenticated()) { return next(); }
+  if (req.isAuthenticated()) {
+    return next();
+  }
   res.redirect(301, FRONT_HOST + '/sign');
 }
 
@@ -90,14 +104,13 @@ router.post('/', function (req, res, next) {
   const email = req.body.email;
 
   models.User
-    .create(
-      {
-        name: name,
-        email: email,
-        playlist: {}
-      },
-      { include: models.Playlist }
-    )
+    .create({
+      name: name,
+      email: email,
+      playlist: {}
+    }, {
+      include: models.Playlist
+    })
     .then(user => res.status(201).json(user));
 });
 
@@ -140,7 +153,11 @@ router.get('/unsplash-images', ensureAuthenticated, function (req, res) {
     `https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`,
     function (error, response, body) {
       if (!error && response.statusCode === 200) {
-        const { total, total_pages, results } = JSON.parse(body);
+        const {
+          total,
+          total_pages,
+          results
+        } = JSON.parse(body);
 
         const response = {};
         response.total = total;
