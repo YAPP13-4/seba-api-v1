@@ -14,6 +14,7 @@ const FRONT_HOST =
     : "http://localhost:3000";
 
 /* GET users listing. */
+
 router.get('/me', function (req, res, next) {
   if (NODE_ENV !== 'production') {
     req.user = {
@@ -28,6 +29,7 @@ router.get('/me', function (req, res, next) {
   const email = req.user.email;
   models.User.findOne({ where: { email } }).then(user => res.json(user));
 });
+
 
 router.get("/musics", ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
@@ -46,6 +48,7 @@ router.get("/musics", ensureAuthenticated, function (req, res, next) {
     res.json(musics);
   });
 });
+
 
 router.get("/featureds", ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
@@ -70,6 +73,7 @@ router.get("/featureds", ensureAuthenticated, function (req, res, next) {
     res.json(musics);
   });
 });
+
 
 router.get("/playlist", ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
@@ -107,6 +111,7 @@ function ensureAuthenticated(req, res, next) {
   }
   res.redirect(301, FRONT_HOST);
 }
+
 
 // router.post("/", ensureAuthenticated, function (req, res, next) {
 //   const name = req.user.name;
@@ -154,12 +159,12 @@ function ensureAuthenticated(req, res, next) {
  *               items:
  *                 type: "string"  
  */
-router.get("/unsplash-images", ensureAuthenticated, function (req, res) {
+router.get("/unsplash-images", ensureAuthenticated, function(req, res) {
   const keyword = req.query.keyword;
   const page = req.query.page;
   request(
     `https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`,
-    function (error, response, body) {
+    function(error, response, body) {
       if (!error && response.statusCode === 200) {
         const { total, total_pages, results } = JSON.parse(body);
 
@@ -175,7 +180,23 @@ router.get("/unsplash-images", ensureAuthenticated, function (req, res) {
   );
 });
 
-// mypage name 수정
+
+/**
+ * @swagger
+ 
+ * /users/name:
+ *  put:
+ *    summary: mypage에서 아티스트의 name정보 수정
+ *    tags: [User]
+ *    parameters:
+ *      - in: "body"
+ *        name: "body"
+ *        required: true
+ *        schema:
+ *          $ref: "#/definitions/NameModifyForm"
+ * 
+ */
+
 router.put("/name", ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
   const name = req.user.name;
@@ -194,7 +215,22 @@ router.put("/name", ensureAuthenticated, function (req, res, next) {
   });
 });
 
-// mypage sns 수정
+/**
+ * @swagger
+ 
+ * /users/sns:
+ *  put:
+ *    summary: mypage의 sns정보 수정
+ *    tags: [User]
+ *    parameters:
+ *      - in: "body"
+ *        name: "body"
+ *        required: true
+ *        schema:
+ *          $ref: "#/definitions/SnsModifyForm"
+ * 
+ */
+
 router.put("/sns", ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
   const snsFacebook = req.body.snsFacebook;
