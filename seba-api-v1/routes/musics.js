@@ -7,6 +7,18 @@ var router = express.Router();
 
 const clientId = 'a281614d7f34dc30b665dfcaa3ed7505';
 
+const NODE_ENV = process.env.NODE_ENV;
+const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
+
+const FIND_SIZE = 10;
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect(301, FRONT_HOST + '/sign');
+}
+
 /**
  * @swagger
  * /musics/seba-choice:
@@ -60,7 +72,8 @@ router.get('/seba-choice', function (req, res, next) {
  *       400:
  *         description: 이미 등록된 url 입력
  */
-router.get('/register-form', function (req, res) {
+router.get('/register-form', ensureAuthenticated, function(req, res) {
+
   const url = req.query.url;
   models.Music
     .findOne({
@@ -124,65 +137,58 @@ router.get('/register-form', function (req, res) {
  *         description: 음악정보가 없는 url 입력
  */
 
-router.post('/', function (req, res, next) {
+router.post('/', ensureAuthenticated, function(req, res, next) {
   const url = req.body.url;
 
-  models.Music
-    .findOne({
-      where: {
-        url: url
-      }
-    })
-    .then(music => {
-      if (music) {
-        res.status(400).json({
-          error: '이미 존재하는 url 입니다'
-        });
-      } else {
-        request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (
-          error,
-          response,
-          body
-        ) {
-          if (!error && response.statusCode === 200) {
-            let {
-              title,
-              user,
-              description,
-              artwork_url,
-              duration,
-              stream_url,
-              created_at
-            } = JSON.parse(body);
+  const curUser = req.user;
 
-            title = req.body.title ? req.body.title : title;
-            user.username = req.body.musician ? req.body.musician : user.username;
-            description = req.body.description ? req.body.description : description;
-            artwork_url = req.body.artworkImg ? req.body.artworkImg : artwork_url;
+  models.User.findOne({ where: { email: curUser.email } }).then(user => {
+    models.Music
+      .findOne({
+        where: { url: url }
+      })
+      .then(music => {
+        if (music) {
+          res.status(400).json({ error: '이미 존재하는 url 입니다' });
+        } else {
+          request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function(
+            error,
+            response,
+            body
+          ) {
+            if (!error && response.statusCode === 200) {
+              let { title, user, description, artwork_url, duration, stream_url, created_at } = JSON.parse(body);
 
-            models.Music
-              .create({
-                title: title,
-                musician: user.username,
-                musicianImg: user.avatar_url,
-                description: description,
-                lylic: req.body.lylic,
-                artworkImg: artwork_url,
-                duration: duration,
-                url: url,
-                streamUrl: stream_url,
-                playCount: 0,
-                createdAtSoundcloud: created_at
-              })
-              .then(music => res.status(201).json(music));
-          } else {
-            res.status(404).json({
-              error: '유효하지 않은 url입니다.'
-            });
-          }
-        });
-      }
-    });
+              title = req.body.title ? req.body.title : title;
+              user.username = req.body.musician ? req.body.musician : user.username;
+              description = req.body.description ? req.body.description : description;
+              artwork_url = req.body.artworkImg ? req.body.artworkImg : artwork_url;
+
+              models.Music
+                .create({
+                  title: title,
+                  musician: user.username,
+                  musicianImg: user.avatar_url,
+                  description: description,
+                  lylic: req.body.lylic,
+                  artworkImg: artwork_url,
+                  duration: duration,
+                  url: url,
+                  streamUrl: stream_url,
+                  playCount: 0,
+                  createdAtSoundcloud: created_at
+                })
+                .then(music => {
+                  user.addMusic(music);
+                  res.status(201).json(music);
+                });
+            } else {
+              res.status(404).json({ error: '유효하지 않은 url입니다.' });
+            }
+          });
+        }
+      });
+  });
 });
 
 /**
@@ -205,6 +211,7 @@ router.post('/', function (req, res, next) {
  *       404:
  *         description: 해당 음악이 없음
  */
+
 router.get('/:id', function (req, res, next) {
   const id = req.params.id;
 
@@ -233,6 +240,7 @@ router.get('/:id', function (req, res, next) {
   });
 });
 
+
 router.get("/rank/featured", function (req, res, next) {
   const musicType = req.query.type;
   models.Featured.findAll({
@@ -249,4 +257,39 @@ router.get("/rank/featured", function (req, res, next) {
       res.json(featured)
     });
 });
+
+router.get('/:id/comments', function(req, res, next) {
+  const musicId = req.params.id;
+  const pageNum = req.query.page; // 요청 페이지 넘버
+  let offset = 0;
+
+  if (pageNum > 1) {
+    offset = FIND_SIZE * (pageNum - 1);
+  }
+
+  models.Comment
+    .findAll({
+      offset: offset,
+      limit: FIND_SIZE,
+      include: [
+        {
+          model: models.User,
+          required: true
+        }
+      ],
+      where: {
+        musicId
+      }
+    })
+    .then(comments => {
+      models.Comment
+        .count({
+          where: {
+            musicId
+          }
+        })
+        .then(commentsCount => res.json({ commentsCount, comments }));
+    });
+});
+
 module.exports = router;

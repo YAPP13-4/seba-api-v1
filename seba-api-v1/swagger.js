@@ -113,12 +113,6 @@ module.exports = {
                 }
               }
             }
-          },
-          comments: {
-            type: 'array',
-            items: {
-              $ref: '#/definitions/Comment'
-            }
           }
         },
         type: 'object'

@@ -4,8 +4,15 @@ var router = express.Router();
 const models = require('../models');
 
 const FIND_SIZE = 10;
+const NODE_ENV = process.env.NODE_ENV;
+const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
 
-router.get('/', function(req, res, next) {
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect(301, FRONT_HOST + '/sign');
+}
+
+router.get('/', function (req, res, next) {
   const pageNum = req.query.page; // 요청 페이지 넘버
   let offset = 0;
 
@@ -27,8 +34,8 @@ router.get('/', function(req, res, next) {
     .then(comments => res.json(comments));
 });
 
-router.post('/', function(req, res, next) {
-  const {content, selected_time, user }= req.body;
+router.post('/', ensureAuthenticated, function (req, res, next) {
+  const { content, selected_time, user } = req.body;
   models.Comment
     .create({
       content,
@@ -38,7 +45,7 @@ router.post('/', function(req, res, next) {
     .then(comments => res.status(201).json(comments));
 });
 
-router.get('/:id', function(req, res, next) {
+router.get('/:id', function (req, res, next) {
   const commentId = req.params.id;
   models.Comment.findById(commentId).then(comments => res.json(comments));
 });
