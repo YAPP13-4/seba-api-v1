@@ -14,13 +14,24 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(100)
       },
       snsFacebook: {
-        type: DataTypes.STRING(50)
+        type: DataTypes.STRING(50),
+        field: 'sns_facebook'
       },
       snsInstagram: {
-        type: DataTypes.STRING(50)
+        type: DataTypes.STRING(50),
+        field: 'sns_instagram'
       },
       snsTwitter: {
-        type: DataTypes.STRING(50)
+        type: DataTypes.STRING(50),
+        field: 'sns_twitter'
+      },
+      profileImg: {
+        type: DataTypes.STRING(255),
+        field: 'profile_img'
+      },
+      backgroundImg: {
+        type: DataTypes.STRING(255),
+        field: 'background_img'
       },
       createdAt: {
         type: DataTypes.DATE,
