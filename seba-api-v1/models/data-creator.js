@@ -18,30 +18,86 @@ const Comment = require("./comment")(sequelize, Sequelize);
 
 module.exports = {
   relationInit: () => {
-    User.hasMany(Music);
-    Music.belongsTo(User);
-
-    User.hasOne(Playlist);
-    Playlist.belongsTo(User);
-
-    User.hasMany(Comment);
-    Comment.belongsTo(User);
-
-    User.hasMany(Featured);
-    Featured.belongsTo(User);
-
-    Music.belongsToMany(Playlist, {
-      through: "playlist_music"
+    User.hasMany(Music, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id'
+      }
     });
-    Playlist.belongsToMany(Music, {
-      through: "playlist_music"
+    Music.belongsTo(User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id'
+      }
     });
 
-    Music.hasMany(Featured);
-    // Featured.belongsTo(Music);
+    User.hasOne(Playlist, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id'
+      }
+    });
+    Playlist.belongsTo(User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id'
+      }
+    });
 
-    Music.hasMany(Comment);
-    Comment.belongsTo(Music);
+    User.hasMany(Comment, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id'
+      }
+    });
+    Comment.belongsTo(User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id'
+      }
+    });
+
+    User.hasMany(Featured, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id'
+      }
+    });
+    Featured.belongsTo(User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id'
+      }
+    });
+
+    Music.belongsToMany(Playlist, { through: 'playlist_music' });
+    Playlist.belongsToMany(Music, { through: 'playlist_music' });
+
+    Music.hasMany(Featured, {
+      foreignKey: {
+        name: 'musicId',
+        field: 'music_id'
+      }
+    });
+    Featured.belongsTo(Music, {
+      foreignKey: {
+        name: 'musicId',
+        field: 'music_id'
+      }
+    });
+
+    Music.hasMany(Comment, {
+      foreignKey: {
+        name: 'musicId',
+        field: 'music_id'
+      }
+    });
+    Comment.belongsTo(Music, {
+      foreignKey: {
+        name: 'musicId',
+        field: 'music_id'
+      }
+    });
   },
 
   dataInit: sequelize => {
