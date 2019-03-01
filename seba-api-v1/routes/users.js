@@ -76,7 +76,7 @@ router.get('/playlist', ensureAuthenticated, function (req, res, next) {
 })
 
 // user의 playlist에 music 추가
-router.post("/user-playlist", ensureAuthenticated, function (req, res, next) {
+router.post("/playlist", ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
   const musicId = req.body.musicId;
 
