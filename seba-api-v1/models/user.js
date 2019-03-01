@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define(
-    'user',
+    "user",
     {
       id: {
         type: DataTypes.BIGINT,
@@ -13,11 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING(100)
       },
+      sns: {
+        type: DataTypes.STRING(50)
+      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
-        field: 'created_at'
+        field: "created_at"
       }
     },
     {
