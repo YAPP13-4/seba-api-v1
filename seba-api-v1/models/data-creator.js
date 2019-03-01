@@ -97,6 +97,7 @@ module.exports = {
           name: "seba0",
           email: "seba0@gmail.com",
           snsFacebook: "seba0@facebook.com",
+          backgroundImg: "backgroundImg",
           playlist: {}
         },
         {
