@@ -15,6 +15,12 @@ const FRONT_HOST =
 
 /* GET users listing. */
 router.get('/me', function (req, res, next) {
+  if (NODE_ENV !== 'production') {
+    req.user = {
+      name: "seba0",
+      email: "seba0@gmail.com"
+    };
+  }
   if (!req.user) {
     res.status(404);
     return;
@@ -24,8 +30,8 @@ router.get('/me', function (req, res, next) {
 });
 
 router.get("/musics", ensureAuthenticated, function (req, res, next) {
-  const email = req.query.email;
-  models.Music.findOne({
+  const email = req.user.email;
+  models.Music.findAll({
     include: [
       {
         model: models.User,
@@ -42,7 +48,7 @@ router.get("/musics", ensureAuthenticated, function (req, res, next) {
 });
 
 router.get("/featureds", ensureAuthenticated, function (req, res, next) {
-  const email = req.query.email;
+  const email = req.user.email;
   models.Music.findAll({
     include: [
       {
@@ -66,7 +72,7 @@ router.get("/featureds", ensureAuthenticated, function (req, res, next) {
 });
 
 router.get("/playlist", ensureAuthenticated, function (req, res, next) {
-  const email = req.query.email;
+  const email = req.user.email;
   models.Music.findAll({
     include: [
       {
@@ -90,28 +96,31 @@ router.get("/playlist", ensureAuthenticated, function (req, res, next) {
 });
 
 function ensureAuthenticated(req, res, next) {
-  if (NODE_ENV !== "production") {
-    return next();
+  if (NODE_ENV !== 'production') {
+    req.user = {
+      name: "seba0",
+      email: "seba0@gmail.com"
+    };
   }
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect(301, FRONT_HOST + "/sign");
+  res.redirect(301, FRONT_HOST);
 }
 
-router.post("/", function (req, res, next) {
-  const name = req.body.name;
-  const email = req.body.email;
+// router.post("/", ensureAuthenticated, function (req, res, next) {
+//   const name = req.user.name;
+//   const email = req.user.email;
 
-  models.User.create(
-    {
-      name: name,
-      email: email,
-      playlist: {}
-    },
-    { include: models.Playlist }
-  ).then(user => res.status(201).json(user));
-});
+//   models.User.create(
+//     {
+//       name: name,
+//       email: email,
+//       playlist: {}
+//     },
+//     { include: models.Playlist }
+//   ).then(user => res.status(201).json(user));
+// });
 
 /**
  * @swagger
@@ -167,9 +176,9 @@ router.get("/unsplash-images", ensureAuthenticated, function (req, res) {
 });
 
 // mypage name 수정
-router.put("/name", function (req, res, next) {
-  const email = req.body.email;
-  const name = req.body.name;
+router.put("/name", ensureAuthenticated, function (req, res, next) {
+  const email = req.user.email;
+  const name = req.user.name;
 
   models.User.update(
     {
@@ -186,8 +195,8 @@ router.put("/name", function (req, res, next) {
 });
 
 // mypage sns 수정
-router.put("/sns", function(req, res, next) {
-  const email = req.body.email;
+router.put("/sns", ensureAuthenticated, function (req, res, next) {
+  const email = req.user.email;
   const snsFacebook = req.body.snsFacebook;
   const snsInstagram = req.body.snsInstagram;
   const snsTwitter = req.body.snsTwitter;

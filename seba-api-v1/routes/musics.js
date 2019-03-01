@@ -13,6 +13,12 @@ const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'htt
 const FIND_SIZE = 10;
 
 function ensureAuthenticated(req, res, next) {
+  if (NODE_ENV !== 'production') {
+    req.user = {
+      name: "seba0",
+      email: "seba0@gmail.com"
+    };
+  }
   if (req.isAuthenticated()) {
     return next();
   }
@@ -72,7 +78,7 @@ router.get('/seba-choice', function (req, res, next) {
  *       400:
  *         description: 이미 등록된 url 입력
  */
-router.get('/register-form', ensureAuthenticated, function(req, res) {
+router.get('/register-form', ensureAuthenticated, function (req, res) {
 
   const url = req.query.url;
   models.Music
@@ -137,7 +143,7 @@ router.get('/register-form', ensureAuthenticated, function(req, res) {
  *         description: 음악정보가 없는 url 입력
  */
 
-router.post('/', ensureAuthenticated, function(req, res, next) {
+router.post('/', ensureAuthenticated, function (req, res, next) {
   const url = req.body.url;
 
   const curUser = req.user;
@@ -151,7 +157,7 @@ router.post('/', ensureAuthenticated, function(req, res, next) {
         if (music) {
           res.status(400).json({ error: '이미 존재하는 url 입니다' });
         } else {
-          request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function(
+          request(`https://api.soundcloud.com/resolve.json?url=${url}&client_id=${clientId}`, function (
             error,
             response,
             body
@@ -244,21 +250,21 @@ router.get('/:id', function (req, res, next) {
 router.get("/rank/featured", function (req, res, next) {
   const musicType = req.query.type;
   models.Featured.findAll({
-      where: {
-        type: musicType
-      },
-      include: {
-        model: models.Music,
-        required: true
-      },
-      raw: true
-    })
+    where: {
+      type: musicType
+    },
+    include: {
+      model: models.Music,
+      required: true
+    },
+    raw: true
+  })
     .then(featured => {
       res.json(featured)
     });
 });
 
-router.get('/:id/comments', function(req, res, next) {
+router.get('/:id/comments', function (req, res, next) {
   const musicId = req.params.id;
   const pageNum = req.query.page; // 요청 페이지 넘버
   let offset = 0;

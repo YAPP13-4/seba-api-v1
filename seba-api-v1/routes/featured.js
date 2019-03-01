@@ -7,19 +7,21 @@ const NODE_ENV = process.env.NODE_ENV;
 const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
 
 function ensureAuthenticated(req, res, next) {
+  if (NODE_ENV !== 'production') {
+    req.user = {
+      name: "seba0",
+      email: "seba0@gmail.com"
+    };
+  }
   if (req.isAuthenticated()) { return next(); }
   res.redirect(301, FRONT_HOST + '/sign');
 }
-
-router.get('/', function (req, res, next) {
-  models.Featured.findAll()
-    .then(featured => res.json(featured));
-});
 
 router.post('/', ensureAuthenticated, function (req, res, next) {
   const { type, music } = req.body;
   let time = req.body.time;
   time = time / 1000;
+
   models.Featured.create({
     type,
     time,
