@@ -41,6 +41,7 @@ function ensureAuthenticated(req, res, next) {
  *             $ref: "#/definitions/Music"
  */
 router.get('/seba-choice', function (req, res, next) {
+
   models.Music
     .findAll({
       where: {
@@ -148,7 +149,7 @@ router.post('/', ensureAuthenticated, function (req, res, next) {
 
   const curUser = req.user;
 
-  models.User.findOne({ where: { email: curUser.email } }).then(user => {
+  models.User.findOne({ where: { email: curUser.email } }).then(dbUser => {
     models.Music
       .findOne({
         where: { url: url }
@@ -185,7 +186,7 @@ router.post('/', ensureAuthenticated, function (req, res, next) {
                   createdAtSoundcloud: created_at
                 })
                 .then(music => {
-                  user.addMusic(music);
+                  dbUser.addMusic(music);
                   res.status(201).json(music);
                 });
             } else {
