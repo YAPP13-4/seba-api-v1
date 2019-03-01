@@ -173,11 +173,34 @@ router.put("/name", function (req, res, next) {
 
   models.User.update(
     {
-      name: name
+      name
     },
     {
       where: {
-        email: email
+        email
+      }
+    }
+  ).then(result => {
+    res.status(200).json(result);
+  });
+});
+
+// mypage sns 수정
+router.put("/sns", function(req, res, next) {
+  const email = req.body.email;
+  const snsFacebook = req.body.snsFacebook;
+  const snsInstagram = req.body.snsInstagram;
+  const snsTwitter = req.body.snsTwitter;
+
+  models.User.update(
+    {
+      snsFacebook: snsFacebook,
+      snsInstagram: snsInstagram,
+      snsTwitter: snsTwitter
+    },
+    {
+      where: {
+        email
       }
     }
   ).then(result => {
