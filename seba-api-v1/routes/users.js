@@ -14,7 +14,7 @@ const FRONT_HOST =
     : "http://localhost:3000";
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
+router.get('/me', function (req, res, next) {
   if (!req.user) {
     res.status(404);
     return;
