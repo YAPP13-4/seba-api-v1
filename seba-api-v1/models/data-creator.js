@@ -64,7 +64,9 @@ module.exports = {
         {
           name: "seba2",
           email: "seba2@gmail.com",
-          sns: "seba2@facebook.com",
+          snsFacebook: "seba2@facebook.com",
+          snsInstagram: "seba2@instagram.com",
+          snsTwitter: "seba2@twitter.com",
           playlist: {}
         },
         {
@@ -94,6 +96,7 @@ module.exports = {
         {
           name: "seba0",
           email: "seba0@gmail.com",
+          snsFacebook: "seba0@facebook.com",
           playlist: {}
         },
         {

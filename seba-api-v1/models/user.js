@@ -13,7 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING(100)
       },
-      sns: {
+      snsFacebook: {
+        type: DataTypes.STRING(50)
+      },
+      snsInstagram: {
+        type: DataTypes.STRING(50)
+      },
+      snsTwitter: {
         type: DataTypes.STRING(50)
       },
       createdAt: {

@@ -184,11 +184,15 @@ router.put("/name", function(req, res, next) {
 // mypage sns 수정
 router.put("/sns", function(req, res, next) {
   const email = req.body.email;
-  const sns = req.body.sns;
+  const snsFacebook = req.body.snsFacebook;
+  const snsInstagram = req.body.snsInstagram;
+  const snsTwitter = req.body.snsTwitter;
 
   models.User.update(
     {
-      sns
+      snsFacebook: snsFacebook,
+      snsInstagram: snsInstagram,
+      snsTwitter: snsTwitter
     },
     {
       where: {
