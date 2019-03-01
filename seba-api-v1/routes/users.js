@@ -24,6 +24,8 @@ router.get('/me', function (req, res, next) {
   }
   if (!req.user) {
     res.status(404);
+    res.json({ error: "user not found" });
+    res.end();
     return;
   }
   const email = req.user.email;
@@ -159,12 +161,12 @@ function ensureAuthenticated(req, res, next) {
  *               items:
  *                 type: "string"  
  */
-router.get("/unsplash-images", ensureAuthenticated, function(req, res) {
+router.get("/unsplash-images", ensureAuthenticated, function (req, res) {
   const keyword = req.query.keyword;
   const page = req.query.page;
   request(
     `https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`,
-    function(error, response, body) {
+    function (error, response, body) {
       if (!error && response.statusCode === 200) {
         const { total, total_pages, results } = JSON.parse(body);
 
