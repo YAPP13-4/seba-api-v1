@@ -11,7 +11,7 @@ const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'htt
 
 /* GET users listing. */
 router.get('/mypage', ensureAuthenticated, function (req, res, next) {
-  const email = req.query.email;
+  const email = req.user.email;
   models.User.findOne({
     where: {
       email
@@ -75,19 +75,29 @@ router.get('/playlist', ensureAuthenticated, function (req, res, next) {
   });
 })
 
-router.post('/playlist', ensureAuthenticated, function (req, res, next) {
-  const {
-    created_at,
-    music
-  } = req.body;
-  models.Playlist.create({
-    created_at,
-    music
-  }).then(musics => {
-    res.status(200);
-    res.json(musics);
+// user의 playlist에 music 추가
+router.post("/user-playlist", ensureAuthenticated, function (req, res, next) {
+  const email = req.user.email;
+  const musicId = req.body.musicId;
+
+  models.Music.findOne({
+    where: {
+      id: musicId
+    }
+  }).then(music => {
+    models.User.findOne({
+        where: {
+          email: email
+        }
+      })
+      .then(user => {
+        user.getPlaylist().then(playlist => playlist.addMusic(music));
+      })
+      .then(result => {
+        res.status(200).json(result);
+      });
   });
-})
+});
 
 function ensureAuthenticated(req, res, next) {
   if (NODE_ENV !== 'production') {
