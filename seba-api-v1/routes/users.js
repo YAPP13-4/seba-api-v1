@@ -163,7 +163,7 @@ router.get("/unsplash-images", ensureAuthenticated, function(req, res) {
 });
 
 // mypage name 수정
-router.post("/modifi-name", function(req, res, next) {
+router.put("/name", function(req, res, next) {
   const email = req.body.email;
   const name = req.body.name;
 
