@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
+var express = require("express")
+var router = express.Router()
 
-const models = require('../models');
+const models = require("../models")
 
 const NODE_ENV = process.env.NODE_ENV;
 const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
@@ -24,8 +24,8 @@ router.post('/', ensureAuthenticated, function (req, res, next) {
     type,
     time,
     music
-  }).then((featured) => res.status(201).json(featured));
-});
+  }).then(featured => res.status(201).json(featured))
+})
 
 router.get('/:id', function (req, res, next) {
   const music_id = req.params.id;
