@@ -18,15 +18,29 @@ function ensureAuthenticated(req, res, next) {
 }
 
 router.post('/', ensureAuthenticated, function (req, res, next) {
-  const { type, music } = req.body;
-  let time = req.body.time;
-  time = time / 1000;
+  const email = req.user.email;
+  const musicId = req.body.musicId;
+  const type = req.body.type;
+  const time = req.body.time / 1000;
 
-  models.Featured.create({
-    type,
-    time,
-    music
-  }).then(featured => res.status(201).json(featured))
+  models.User.findOne({
+    where: {
+      email
+    }
+  }).then(user => {
+    models.Music.findByPk(musicId)
+      .then(music => {
+        models.Featured.create({
+          type,
+          time
+        }).then(featured => {
+          user.addFeatured(featured);
+          music.addFeatured(featured);
+          res.status(200);
+          res.json(featured);
+        });
+      });
+  });
 })
 
 router.get('/:id', function (req, res, next) {
