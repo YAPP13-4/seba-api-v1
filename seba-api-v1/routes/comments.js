@@ -6,17 +6,7 @@ const models = require('../models');
 const FIND_SIZE = 10;
 const NODE_ENV = process.env.NODE_ENV;
 const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
-
-function ensureAuthenticated(req, res, next) {
-  if (NODE_ENV !== 'production') {
-    req.user = {
-      name: "seba0",
-      email: "seba0@gmail.com"
-    };
-  }
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect(301, FRONT_HOST + '/sign');
-}
+const ensureAuthenticated = require('../util/loginAuth');
 
 router.get('/', function (req, res, next) {
   const pageNum = req.query.page; // 요청 페이지 넘버
@@ -30,18 +20,20 @@ router.get('/', function (req, res, next) {
     .findAll({
       offset: offset,
       limit: FIND_SIZE,
-      include: [
-        {
-          model: models.User,
-          required: true
-        }
-      ]
+      include: [{
+        model: models.User,
+        required: true
+      }]
     })
     .then(comments => res.json(comments));
 });
 
 router.post('/', ensureAuthenticated, function (req, res, next) {
-  const { content, selected_time, user } = req.body;
+  const {
+    content,
+    selected_time,
+    user
+  } = req.body;
   models.Comment
     .create({
       content,
