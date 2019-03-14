@@ -274,8 +274,7 @@ router.put('/artist-description', ensureAuthenticated, function(
   next
 ) {
   const description = req.body.description;
-  const email = req.body.email;
-  // 해당 사용자의 description 속성 필드를 채우기 -> update 사용하기 -> 사용자의 email로 해당 사용자의 것 업데이트
+  const email = req.user.email;
 
   models.User.update(
     {
