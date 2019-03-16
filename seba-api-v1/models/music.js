@@ -48,6 +48,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         field: 'play_count'
       },
+      viewCount: {
+        type: DataTypes.INTEGER,
+        field: 'view_count'
+      },
       createdAtSoundcloud: {
         type: DataTypes.DATE,
         field: 'created_at_soundcloud'

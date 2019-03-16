@@ -318,4 +318,15 @@ router.get("/:id/comments", function (req, res, next) {
   });
 });
 
+router.put("/viewCount", function (req, res, next) {
+  const id = req.body.id;
+
+  models.Music.update({
+    viewCount: sequelize.literal("view_count + 1")
+  }, {
+    where: {id}
+  }).then((result) => {
+    res.status(200).json(result);
+  })
+});
 module.exports = router;
