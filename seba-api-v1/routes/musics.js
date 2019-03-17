@@ -329,4 +329,12 @@ router.put("/viewCount", function (req, res, next) {
     res.status(200).json(result);
   })
 });
+
+router.get("/view/topView", function (req, res, next) {
+  models.Music.findAll({
+    order: sequelize.literal('view_count DESC')
+  }).then(musics => {
+    res.json(musics);
+  });
+});
 module.exports = router;
