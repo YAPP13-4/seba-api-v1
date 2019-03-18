@@ -114,7 +114,6 @@ module.exports = {
       url: "https://soundcloud.com/dp1rv1baiqxn/prod-hecop-music",
       streamUrl: "https://api.soundcloud.com/tracks/490398075/stream",
       playCount: 0,
-      viewCount: 0,
       createdAtSoundcloud: "2018/08/25 09:42:17"
     }).then(music => {
       User.create(
@@ -147,7 +146,6 @@ module.exports = {
       url: "https://soundcloud.com/42kgb/loveshitcantloveher",
       streamUrl: "https://api.soundcloud.com/tracks/545706672/stream",
       playCount: 0,
-      viewCount: 0,
       createdAtSoundcloud: "2018/12/16 11:30:40"
     }).then(music => {
       User.create(
@@ -215,7 +213,6 @@ module.exports = {
       url: "https://soundcloud.com/scentok/prod-boy-fifty",
       streamUrl: "https://api.soundcloud.com/tracks/500645352/stream",
       playCount: 0,
-      viewCount: 0,
       createdAtSoundcloud: "2018/09/16 12:14:05"
     }).then(music => {
       User.create(

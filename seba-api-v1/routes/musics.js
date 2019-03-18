@@ -318,11 +318,11 @@ router.get("/:id/comments", function (req, res, next) {
   });
 });
 
-router.put("/viewCount", function (req, res, next) {
+router.put("/play-count", function (req, res, next) {
   const id = req.body.id;
 
   models.Music.update({
-    viewCount: sequelize.literal("view_count + 1")
+    playCount: sequelize.literal("play_count + 1")
   }, {
     where: {id}
   }).then((result) => {
@@ -330,9 +330,9 @@ router.put("/viewCount", function (req, res, next) {
   })
 });
 
-router.get("/view/topView", function (req, res, next) {
+router.get("/play/top-list", function (req, res, next) {
   models.Music.findAll({
-    order: sequelize.literal('view_count DESC')
+    order: sequelize.literal('play_count DESC')
   }).then(musics => {
     res.json(musics);
   });
