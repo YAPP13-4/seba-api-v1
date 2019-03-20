@@ -1,30 +1,30 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
-var request = require("request");
+var request = require('request');
 
-const models = require("../models");
+const models = require('../models');
 
 const UNSPLASH_CLIENT_ID =
-  "a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf";
+  'a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf';
 
 const NODE_ENV = process.env.NODE_ENV;
 const FRONT_HOST =
-  NODE_ENV === "production"
-    ? "https://semibasement.com"
-    : "http://localhost:3000";
+  NODE_ENV === 'production'
+    ? 'https://semibasement.com'
+    : 'http://localhost:3000';
 
 /* GET users listing. */
 
-router.get('/me', function (req, res, next) {
+router.get('/me', function(req, res, next) {
   if (NODE_ENV !== 'production') {
     req.user = {
-      name: "seba0",
-      email: "seba0@gmail.com"
+      name: 'seba0',
+      email: 'seba0@gmail.com'
     };
   }
   if (!req.user) {
     res.status(404);
-    res.json({ error: "user not found" });
+    res.json({ error: 'user not found' });
     res.end();
     return;
   }
@@ -32,8 +32,7 @@ router.get('/me', function (req, res, next) {
   models.User.findOne({ where: { email } }).then(user => res.json(user));
 });
 
-
-router.get("/musics", ensureAuthenticated, function (req, res, next) {
+router.get('/musics', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   models.Music.findAll({
     include: [
@@ -51,8 +50,7 @@ router.get("/musics", ensureAuthenticated, function (req, res, next) {
   });
 });
 
-
-router.get("/featureds", ensureAuthenticated, function (req, res, next) {
+router.get('/featureds', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   models.Music.findAll({
     include: [
@@ -76,8 +74,7 @@ router.get("/featureds", ensureAuthenticated, function (req, res, next) {
   });
 });
 
-
-router.get("/playlist", ensureAuthenticated, function (req, res, next) {
+router.get('/playlist', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   models.Music.findAll({
     include: [
@@ -104,8 +101,8 @@ router.get("/playlist", ensureAuthenticated, function (req, res, next) {
 function ensureAuthenticated(req, res, next) {
   if (NODE_ENV !== 'production') {
     req.user = {
-      name: "seba0",
-      email: "seba0@gmail.com"
+      name: 'seba0',
+      email: 'seba0@gmail.com'
     };
   }
   if (req.isAuthenticated()) {
@@ -113,7 +110,6 @@ function ensureAuthenticated(req, res, next) {
   }
   res.redirect(301, FRONT_HOST);
 }
-
 
 // router.post("/", ensureAuthenticated, function (req, res, next) {
 //   const name = req.user.name;
@@ -161,12 +157,12 @@ function ensureAuthenticated(req, res, next) {
  *               items:
  *                 type: "string"  
  */
-router.get("/unsplash-images", ensureAuthenticated, function (req, res) {
+router.get('/unsplash-images', ensureAuthenticated, function(req, res) {
   const keyword = req.query.keyword;
   const page = req.query.page;
   request(
     `https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`,
-    function (error, response, body) {
+    function(error, response, body) {
       if (!error && response.statusCode === 200) {
         const { total, total_pages, results } = JSON.parse(body);
 
@@ -181,7 +177,6 @@ router.get("/unsplash-images", ensureAuthenticated, function (req, res) {
     }
   );
 });
-
 
 /**
  * @swagger
@@ -199,7 +194,7 @@ router.get("/unsplash-images", ensureAuthenticated, function (req, res) {
  * 
  */
 
-router.put("/name", ensureAuthenticated, function (req, res, next) {
+router.put('/name', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   const name = req.user.name;
 
@@ -233,7 +228,7 @@ router.put("/name", ensureAuthenticated, function (req, res, next) {
  * 
  */
 
-router.put("/sns", ensureAuthenticated, function (req, res, next) {
+router.put('/sns', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   const snsFacebook = req.body.snsFacebook;
   const snsInstagram = req.body.snsInstagram;
@@ -255,7 +250,7 @@ router.put("/sns", ensureAuthenticated, function (req, res, next) {
   });
 });
 
-router.put('/background-img', ensureAuthenticated, function (req, res, next) {
+router.put('/background-img', ensureAuthenticated, function(req, res, next) {
   const backgroundImg = req.body.backgroundImg;
   const email = req.user.email;
 
@@ -270,7 +265,29 @@ router.put('/background-img', ensureAuthenticated, function (req, res, next) {
     }
   ).then(user => {
     res.status(200).json(user);
-  })
+  });
+});
+
+router.put('/artist-description', ensureAuthenticated, function(
+  req,
+  res,
+  next
+) {
+  const description = req.body.description;
+  const email = req.user.email;
+
+  models.User.update(
+    {
+      description
+    },
+    {
+      where: {
+        email
+      }
+    }
+  ).then(result => {
+    res.send(200).json(result);
+  });
 });
 
 module.exports = router;
