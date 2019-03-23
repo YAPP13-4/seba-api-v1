@@ -65,7 +65,7 @@ router.get('/title/:searchText', function(req, res, next) {
 
 /**
  *  @swagger
- * /search/lylic/{searchText}:
+ * /search/lyric/{searchText}:
  *   get:
  *     summary: 가사 기반 검색 결과
  *     tags: [Search]
@@ -76,7 +76,7 @@ router.get('/title/:searchText', function(req, res, next) {
  *
  */
 
-router.get('/lylic/:searchText', function(req, res, next) {
+router.get('/lyric/:searchText', function(req, res, next) {
   let searchText = req.params.searchText;
   console.log(searchText);
 
