@@ -5,6 +5,36 @@ var Op = sequelize.Op;
 
 var router = express.Router();
 
+// 전체를 통합하는 검색 기능 추가해야함
+
+/**
+ *  @swagger
+ * /search/musician/{searchText}:
+ *   get:
+ *     summary: 뮤지션 기반 검색 결과
+ *     tags: [Search]
+ *     parameters:
+ *      - in: "path"
+ *        name: "searchText"
+ *        required: true
+ *
+ */
+
+router.get('/musician/:searchText', function(req, res, next) {
+  let searchText = req.params.searchText;
+  console.log(searchText);
+
+  models.Music.findAll({
+    where: {
+      musician: {
+        [Op.like]: '%' + searchText + '%'
+      }
+    }
+  }).then(result => {
+    res.json(result);
+  });
+});
+
 /**
  *  @swagger
  * /search/title/{searchText}:
@@ -18,15 +48,41 @@ var router = express.Router();
  *
  */
 
-// 곡 제목을 기반으로 하는 검색 기능 구현
 router.get('/title/:searchText', function(req, res, next) {
   let searchText = req.params.searchText;
   console.log(searchText);
 
   models.Music.findAll({
-    attributes: ['title', 'musician', 'duration', 'play_count'],
     where: {
       title: {
+        [Op.like]: '%' + searchText + '%'
+      }
+    }
+  }).then(result => {
+    res.json(result);
+  });
+});
+
+/**
+ *  @swagger
+ * /search/lylic/{searchText}:
+ *   get:
+ *     summary: 가사 기반 검색 결과
+ *     tags: [Search]
+ *     parameters:
+ *      - in: "path"
+ *        name: "searchText"
+ *        required: true
+ *
+ */
+
+router.get('/lylic/:searchText', function(req, res, next) {
+  let searchText = req.params.searchText;
+  console.log(searchText);
+
+  models.Music.findAll({
+    where: {
+      lylic: {
         [Op.like]: '%' + searchText + '%'
       }
     }
