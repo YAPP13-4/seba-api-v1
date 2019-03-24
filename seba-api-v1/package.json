@@ -17,6 +17,7 @@
     "mysql2": "^1.6.4",
     "passport": "^0.4.0",
     "passport-facebook": "^3.0.0",
+    "passport-kakao": "0.0.5",
     "request": "^2.88.0",
     "sequelize": "^4.41.2"
   },
