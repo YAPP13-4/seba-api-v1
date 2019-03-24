@@ -5,17 +5,7 @@ const models = require("../models")
 
 const NODE_ENV = process.env.NODE_ENV;
 const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
-
-function ensureAuthenticated(req, res, next) {
-  if (NODE_ENV !== 'production') {
-    req.user = {
-      name: "seba0",
-      email: "seba0@gmail.com"
-    };
-  }
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect(301, FRONT_HOST + '/sign');
-}
+const ensureAuthenticated = require('../util/loginAuth');
 
 router.post('/', ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
@@ -45,7 +35,11 @@ router.post('/', ensureAuthenticated, function (req, res, next) {
 
 router.get('/:id', function (req, res, next) {
   const music_id = req.params.id;
-  models.Featured.findAll({ where: { music_id } })
+  models.Featured.findAll({
+      where: {
+        music_id
+      }
+    })
     .then(featured => res.json(featured));
 });
 module.exports = router;

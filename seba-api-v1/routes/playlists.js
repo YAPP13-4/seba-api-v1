@@ -2,20 +2,10 @@ var express = require('express');
 var router = express.Router();
 
 const models = require('../models');
+const ensureAuthenticated = require('../util/loginAuth');
 
 const NODE_ENV = process.env.NODE_ENV;
 const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
-
-function ensureAuthenticated(req, res, next) {
-  if (NODE_ENV !== 'production') {
-    req.user = {
-      name: "seba0",
-      email: "seba0@gmail.com"
-    };
-  }
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect(301, FRONT_HOST + '/sign');
-}
 
 /* GET users listing. */
 router.get('/', ensureAuthenticated, function (req, res, next) {
