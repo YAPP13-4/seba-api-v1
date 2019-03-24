@@ -26,7 +26,7 @@ const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'htt
  *       404:
  *         description: 비 로그인 상태
  */
-router.get('/me', function(req, res, next) {
+router.get('/me', function (req, res, next) {
   if (NODE_ENV !== 'production') {
     req.user = {
       name: 'seba0',
@@ -58,7 +58,7 @@ router.get('/me', function(req, res, next) {
  *           items:
  *             $ref: "#/definitions/Music"
  */
-router.get('/musics', ensureAuthenticated, function(req, res, next) {
+router.get('/musics', ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
   models.Music
     .findAll({
@@ -93,7 +93,7 @@ router.get('/musics', ensureAuthenticated, function(req, res, next) {
  *           items:
  *             $ref: "#/definitions/Music"
  */
-router.get('/featureds', ensureAuthenticated, function(req, res, next) {
+router.get('/featureds', ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
   models.Music
     .findAll({
@@ -134,7 +134,7 @@ router.get('/featureds', ensureAuthenticated, function(req, res, next) {
  *           items:
  *             $ref: "#/definitions/Music"
  */
-router.get('/playlist', ensureAuthenticated, function(req, res, next) {
+router.get('/playlist', ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
   models.Music
     .findAll({
@@ -205,12 +205,12 @@ function ensureAuthenticated(req, res, next) {
  *               items:
  *                 type: "string"  
  */
-router.get('/unsplash-images', ensureAuthenticated, function(req, res) {
+router.get('/unsplash-images', ensureAuthenticated, function (req, res) {
   const keyword = req.query.keyword;
   const page = req.query.page;
   request(
     `https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`,
-    function(error, response, body) {
+    function (error, response, body) {
       if (!error && response.statusCode === 200) {
         const { total, total_pages, results } = JSON.parse(body);
 
@@ -244,7 +244,7 @@ router.get('/unsplash-images', ensureAuthenticated, function(req, res) {
  *              type: "string"
  */
 
-router.put('/name', ensureAuthenticated, function(req, res, next) {
+router.put('/name', ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
   const name = req.user.name;
 
@@ -286,7 +286,7 @@ router.put('/name', ensureAuthenticated, function(req, res, next) {
  *              type: "string"
  */
 
-router.put('/sns', ensureAuthenticated, function(req, res, next) {
+router.put('/sns', ensureAuthenticated, function (req, res, next) {
   const email = req.user.email;
   const snsFacebook = req.body.snsFacebook;
   const snsInstagram = req.body.snsInstagram;
@@ -327,7 +327,7 @@ router.put('/sns', ensureAuthenticated, function(req, res, next) {
  *            background-img:
  *              type: "string"
  */
-router.put('/background-img', ensureAuthenticated, function(req, res, next) {
+router.put('/background-img', ensureAuthenticated, function (req, res, next) {
   const backgroundImg = req.body.backgroundImg;
   const email = req.user.email;
 
@@ -341,10 +341,31 @@ router.put('/background-img', ensureAuthenticated, function(req, res, next) {
           email
         }
       }
-    )
-    .then(user => {
+    ).then(user => {
       res.status(200).json(user);
     });
+});
+
+router.put('/artist-description', ensureAuthenticated, function (
+  req,
+  res,
+  next
+) {
+  const description = req.body.description;
+  const email = req.user.email;
+
+  models.User.update(
+    {
+      description
+    },
+    {
+      where: {
+        email
+      }
+    }
+  ).then(result => {
+    res.send(200).json(result);
+  });
 });
 
 module.exports = router;
