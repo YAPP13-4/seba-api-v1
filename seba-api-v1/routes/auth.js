@@ -19,7 +19,7 @@ router.get('/facebook/callback',
         const name = req.user.name;
         const email = req.user.email;
 
-        models.user.findOne({
+        models.User.findOne({
             where: {
                 email
             }
@@ -44,31 +44,30 @@ router.get('/facebook/callback',
 router.get('/kakao',
     passportKakao.authenticate('kakao'));
 
-router.get('/oauth/kakao/callback',
+router.get('/oauth',
     passportKakao.authenticate('kakao', { failureRedirect: '/login' }),
     function (req, res) {
-        console.log('000000000000000', req)
-        // const name = req.user.name;
-        // const email = req.user.email;
+        const name = req.user.username;
+        const email = req.user._json.kaccount_email;
 
-        // models.user.findOne({
-        //     where: {
-        //         email
-        //     }
-        // }).then(user => {
-        //     if (user) {
-        //         res.redirect(FRONT_HOST + '/main')
-        //     } else {
-        //         models.User.create(
-        //             {
-        //                 name: name,
-        //                 email: email,
-        //                 playlist: {}
-        //             },
-        //             { include: models.Playlist }
-        //         ).then(user => res.redirect(FRONT_HOST + '/main'));
-        //     }
-        // })
+        models.User.findOne({
+            where: {
+                email
+            }
+        }).then(user => {
+            if (user) {
+                res.redirect(FRONT_HOST + '/main')
+            } else {
+                models.User.create(
+                    {
+                        name: name,
+                        email: email,
+                        playlist: {}
+                    },
+                    { include: models.Playlist }
+                ).then(user => res.redirect(FRONT_HOST + '/main'));
+            }
+        })
     });
 
 module.exports = router;
