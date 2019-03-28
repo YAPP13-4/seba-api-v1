@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define(
-    "user",
+    'user',
     {
       id: {
         type: DataTypes.BIGINT,
@@ -37,11 +37,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         field: 'background_img'
       },
+      description: {
+        type: DataTypes.STRING(255)
+      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
-        field: "created_at"
+        field: 'created_at'
       }
     },
     {
