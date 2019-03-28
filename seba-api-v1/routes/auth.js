@@ -21,7 +21,7 @@ router.get('/facebook/callback',
 
         models.User.findOne({
             where: {
-                email
+                snsFacebook: email
             }
         }).then(user => {
             if (user) {
@@ -30,7 +30,7 @@ router.get('/facebook/callback',
                 models.User.create(
                     {
                         name: name,
-                        email: email,
+                        snsFacebook: email,
                         playlist: {}
                     },
                     { include: models.Playlist }
@@ -52,7 +52,7 @@ router.get('/oauth',
 
         models.User.findOne({
             where: {
-                email
+                snsKakao: email
             }
         }).then(user => {
             if (user) {
@@ -61,7 +61,7 @@ router.get('/oauth',
                 models.User.create(
                     {
                         name: name,
-                        email: email,
+                        snsKakao: email,
                         playlist: {}
                     },
                     { include: models.Playlist }
