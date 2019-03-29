@@ -21,7 +21,7 @@ router.get('/facebook/callback',
 
         models.User.findOne({
             where: {
-                snsFacebook: email
+                email
             }
         }).then(user => {
             if (user) {
@@ -30,7 +30,7 @@ router.get('/facebook/callback',
                 models.User.create(
                     {
                         name: name,
-                        snsFacebook: email,
+                        email: email,
                         playlist: {}
                     },
                     { include: models.Playlist }
@@ -52,7 +52,7 @@ router.get('/oauth',
 
         models.User.findOne({
             where: {
-                snsKakao: email
+                email
             }
         }).then(user => {
             if (user) {
@@ -61,11 +61,11 @@ router.get('/oauth',
                 models.User.create(
                     {
                         name: name,
-                        snsKakao: email,
+                        email: email,
                         playlist: {}
                     },
                     { include: models.Playlist }
-                ).then(user => res.redirect(FRONT_HOST + '/main'));
+                ).then(_ => res.redirect(FRONT_HOST + '/main'));
             }
         })
     });

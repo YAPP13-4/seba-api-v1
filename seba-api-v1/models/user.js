@@ -24,10 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       snsTwitter: {
         type: DataTypes.STRING(50),
         field: 'sns_twitter'
-      },  
-      snsKakao: {
-        type: DataTypes.STRING(50),
-        field: 'sns_kakao'
       },
       profileImg: {
         type: DataTypes.STRING(255),
