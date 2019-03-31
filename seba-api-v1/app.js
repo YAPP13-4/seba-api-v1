@@ -14,6 +14,7 @@ var musicRouter = require('./routes/musics');
 var featuredRouter = require('./routes/featured');
 var commentRouter = require('./routes/comments');
 var authRouter = require('./routes/auth');
+var searchRouter = require('./routes/search');
 
 var dataCreator = require('./models/data-creator');
 
@@ -40,11 +41,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
-  secret: 's3cr3t',
-  resave: true,
-  saveUninitialized: true
-}));
+app.use(
+  session({
+    secret: 's3cr3t',
+    resave: true,
+    saveUninitialized: true
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -55,6 +58,7 @@ app.use('/musics', musicRouter);
 app.use('/featured', featuredRouter);
 app.use('/comments', commentRouter);
 app.use('/auth', authRouter);
+app.use('/search', searchRouter);
 
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerOption = require('./swagger');
@@ -64,12 +68,12 @@ const swaggerUi = require('swagger-ui-express');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
