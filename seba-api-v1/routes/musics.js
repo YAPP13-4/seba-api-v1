@@ -272,6 +272,7 @@ router.get("/:id", function (req, res, next) {
 });
 
 router.get("/rank/featured", function (req, res, next) {
+  console.log('000000000', process.env)
   const musicType = req.query.type;
   models.Featured.findAll({
     where: {

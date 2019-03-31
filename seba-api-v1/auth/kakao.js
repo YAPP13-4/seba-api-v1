@@ -1,7 +1,7 @@
 var passport = require('passport');
 var KakaoStrategy = require('passport-kakao').Strategy;
 
-const KAKAO_CLIENT_ID = '3b285a582ec849d2a31e37f3fb0e9949';
+const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID;
 const NODE_ENV = process.env.NODE_ENV;
 const HOST_URL = NODE_ENV === 'production' ? 'https://seba-api.cf' : 'http://localhost:6508';
 const CALLBACK_URL = HOST_URL + '/auth/oauth';
