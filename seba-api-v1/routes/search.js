@@ -5,7 +5,45 @@ var Op = sequelize.Op;
 
 var router = express.Router();
 
-// 전체를 통합하는 검색 기능 추가해야함
+/**
+ *  @swagger
+ * /search/all/{searchText}:
+ *   get:
+ *     summary: 전체 검색 결과
+ *     tags: [Search]
+ *     parameters:
+ *      - in: "path"
+ *        name: "searchText"
+ *        required: true
+ *
+ */
+router.get('/all/:searchText', function(req, res, next) {
+  let searchText = req.params.searchText;
+
+  models.Music.findAll({
+    where: {
+      [Op.or]: [
+        {
+          musician: {
+            [Op.like]: '%' + searchText + '%'
+          }
+        },
+        {
+          title: {
+            [Op.like]: '%' + searchText + '%'
+          }
+        },
+        {
+          lylic: {
+            [Op.like]: '%' + searchText + '%'
+          }
+        }
+      ]
+    }
+  }).then(result => {
+    res.json(result);
+  });
+});
 
 /**
  *  @swagger
@@ -22,7 +60,6 @@ var router = express.Router();
 
 router.get('/musician/:searchText', function(req, res, next) {
   let searchText = req.params.searchText;
-  console.log(searchText);
 
   models.Music.findAll({
     where: {
@@ -50,7 +87,6 @@ router.get('/musician/:searchText', function(req, res, next) {
 
 router.get('/title/:searchText', function(req, res, next) {
   let searchText = req.params.searchText;
-  console.log(searchText);
 
   models.Music.findAll({
     where: {
@@ -78,7 +114,6 @@ router.get('/title/:searchText', function(req, res, next) {
 
 router.get('/lyric/:searchText', function(req, res, next) {
   let searchText = req.params.searchText;
-  console.log(searchText);
 
   models.Music.findAll({
     where: {
