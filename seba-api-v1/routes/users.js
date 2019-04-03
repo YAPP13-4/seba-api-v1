@@ -4,10 +4,14 @@ var request = require('request');
 
 const models = require('../models');
 
-const UNSPLASH_CLIENT_ID = 'a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf';
+const UNSPLASH_CLIENT_ID =
+  'a874e0b6e8fb7dd8b145dc11534f42ed0637b7d513de0451f0f86c4c01d418bf';
 
 const NODE_ENV = process.env.NODE_ENV;
-const FRONT_HOST = NODE_ENV === 'production' ? 'https://semibasement.com' : 'http://localhost:3000';
+const FRONT_HOST =
+  NODE_ENV === 'production'
+    ? 'https://semibasement.com'
+    : 'http://localhost:3000';
 
 const ensureAuthenticated = require('../util/loginAuth');
 /* GET users listing. */
@@ -27,7 +31,7 @@ const ensureAuthenticated = require('../util/loginAuth');
  *       404:
  *         description: 비 로그인 상태
  */
-router.get('/me', function (req, res, next) {
+const meFunc = function(req, res, next) {
   if (NODE_ENV !== 'production') {
     req.user = {
       name: 'seba0',
@@ -46,7 +50,8 @@ router.get('/me', function (req, res, next) {
       email
     }
   }).then(user => res.json(user));
-});
+};
+router.get('/me', meFunc);
 
 /**
  * @swagger
@@ -63,16 +68,18 @@ router.get('/me', function (req, res, next) {
  *           items:
  *             $ref: "#/definitions/Music"
  */
-router.get('/musics', ensureAuthenticated, function (req, res, next) {
+router.get('/musics', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   models.Music.findAll({
-    include: [{
-      model: models.User,
-      required: true,
-      where: {
-        email
+    include: [
+      {
+        model: models.User,
+        required: true,
+        where: {
+          email
+        }
       }
-    }]
+    ]
   }).then(musics => {
     res.status(200);
     res.json(musics);
@@ -94,20 +101,24 @@ router.get('/musics', ensureAuthenticated, function (req, res, next) {
  *           items:
  *             $ref: "#/definitions/Music"
  */
-router.get('/featureds', ensureAuthenticated, function (req, res, next) {
+router.get('/featureds', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   models.Music.findAll({
-    include: [{
-      model: models.Featured,
-      required: true,
-      include: [{
-        model: models.User,
+    include: [
+      {
+        model: models.Featured,
         required: true,
-        where: {
-          email
-        }
-      }]
-    }]
+        include: [
+          {
+            model: models.User,
+            required: true,
+            where: {
+              email
+            }
+          }
+        ]
+      }
+    ]
   }).then(musics => {
     res.status(200);
     res.json(musics);
@@ -129,20 +140,24 @@ router.get('/featureds', ensureAuthenticated, function (req, res, next) {
  *           items:
  *             $ref: "#/definitions/Music"
  */
-router.get('/playlist', ensureAuthenticated, function (req, res, next) {
+router.get('/playlist', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   models.Music.findAll({
-    include: [{
-      model: models.Playlist,
-      required: true,
-      include: [{
-        model: models.User,
+    include: [
+      {
+        model: models.Playlist,
         required: true,
-        where: {
-          email
-        }
-      }]
-    }]
+        include: [
+          {
+            model: models.User,
+            required: true,
+            where: {
+              email
+            }
+          }
+        ]
+      }
+    ]
   }).then(musics => {
     res.status(200);
     res.json(musics);
@@ -162,7 +177,6 @@ router.get('/playlist', ensureAuthenticated, function (req, res, next) {
 //     { include: models.Playlist }
 //   ).then(user => res.status(201).json(user));
 // });
-
 
 /**
  * @swagger
@@ -196,18 +210,14 @@ router.get('/playlist', ensureAuthenticated, function (req, res, next) {
  *               items:
  *                 type: "string"  
  */
-router.get('/unsplash-images', ensureAuthenticated, function (req, res) {
+router.get('/unsplash-images', ensureAuthenticated, function(req, res) {
   const keyword = req.query.keyword;
   const page = req.query.page;
   request(
     `https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${UNSPLASH_CLIENT_ID}`,
-    function (error, response, body) {
+    function(error, response, body) {
       if (!error && response.statusCode === 200) {
-        const {
-          total,
-          total_pages,
-          results
-        } = JSON.parse(body);
+        const { total, total_pages, results } = JSON.parse(body);
 
         const response = {};
         response.total = total;
@@ -239,17 +249,20 @@ router.get('/unsplash-images', ensureAuthenticated, function (req, res) {
  *              type: "string"
  */
 
-router.put('/name', ensureAuthenticated, function (req, res, next) {
+router.put('/name', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   const name = req.user.name;
 
-  models.User.update({
-    name
-  }, {
-    where: {
-      email
+  models.User.update(
+    {
+      name
+    },
+    {
+      where: {
+        email
+      }
     }
-  }).then(result => {
+  ).then(result => {
     res.status(200).json(result);
   });
 });
@@ -276,21 +289,24 @@ router.put('/name', ensureAuthenticated, function (req, res, next) {
  *              type: "string"
  */
 
-router.put('/sns', ensureAuthenticated, function (req, res, next) {
+router.put('/sns', ensureAuthenticated, function(req, res, next) {
   const email = req.user.email;
   const snsFacebook = req.body.snsFacebook;
   const snsInstagram = req.body.snsInstagram;
   const snsTwitter = req.body.snsTwitter;
 
-  models.User.update({
-    snsFacebook: snsFacebook,
-    snsInstagram: snsInstagram,
-    snsTwitter: snsTwitter
-  }, {
-    where: {
-      email
+  models.User.update(
+    {
+      snsFacebook: snsFacebook,
+      snsInstagram: snsInstagram,
+      snsTwitter: snsTwitter
+    },
+    {
+      where: {
+        email
+      }
     }
-  }).then(result => {
+  ).then(result => {
     res.status(200).json(result);
   });
 });
@@ -312,25 +328,25 @@ router.put('/sns', ensureAuthenticated, function (req, res, next) {
  *            background-img:
  *              type: "string"
  */
-router.put('/background-img', ensureAuthenticated, function (req, res, next) {
+router.put('/background-img', ensureAuthenticated, function(req, res, next) {
   const backgroundImg = req.body.backgroundImg;
   const email = req.user.email;
 
-  models.User
-    .update(
-      {
-        backgroundImg
-      },
-      {
-        where: {
-          email
-        }
-      }).then(user => {
-      res.status(200).json(user);
-    });
+  models.User.update(
+    {
+      backgroundImg
+    },
+    {
+      where: {
+        email
+      }
+    }
+  ).then(user => {
+    res.status(200).json(user);
+  });
 });
 
-router.put('/artist-description', ensureAuthenticated, function (
+router.put('/artist-description', ensureAuthenticated, function(
   req,
   res,
   next
@@ -346,9 +362,11 @@ router.put('/artist-description', ensureAuthenticated, function (
       where: {
         email
       }
-    }).then(result => {
+    }
+  ).then(result => {
     res.send(200).json(result);
   });
 });
 
 module.exports = router;
+module.exports.me = meFunc;

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "test": "node_modules/mocha/bin/mocha $(find ./routes -name '*.spec.js') --recursive -w"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
@@ -18,10 +19,14 @@
     "passport": "^0.4.0",
     "passport-facebook": "^3.0.0",
     "request": "^2.88.0",
-    "sequelize": "^4.41.2"
+    "sequelize": "^4.41.2",
+    "sinon": "^7.3.1"
   },
   "devDependencies": {
+    "mocha": "^6.0.2",
+    "node-mocks-http": "^1.7.3",
     "nodemon": "^1.18.10",
+    "should": "^13.2.3",
     "swagger-jsdoc": "^3.2.6",
     "swagger-ui-express": "^4.0.2"
   }
