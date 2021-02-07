@@ -318,4 +318,23 @@ router.get("/:id/comments", function (req, res, next) {
   });
 });
 
+router.put("/play-count", function (req, res, next) {
+  const id = req.body.id;
+
+  models.Music.update({
+    playCount: sequelize.literal("play_count + 1")
+  }, {
+    where: {id}
+  }).then((result) => {
+    res.status(200).json(result);
+  })
+});
+
+router.get("/play/top-list", function (req, res, next) {
+  models.Music.findAll({
+    order: sequelize.literal('play_count DESC')
+  }).then(musics => {
+    res.json(musics);
+  });
+});
 module.exports = router;
